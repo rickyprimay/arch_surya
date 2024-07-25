@@ -48,7 +48,7 @@
                         </a>
                     </li>
                     <li>
-                        <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
+                        <a href="{{ route('dashboard.timeline') }}" class="flex items-center p-2 text-gray-900 rounded-lg {{ Route::is('dashboard.timeline*') ? 'bg-gray-100' : 'hover:bg-gray-100 group' }} group">
                             <span>Timeline</span>
                         </a>
                     </li>

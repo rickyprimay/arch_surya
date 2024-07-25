@@ -5,6 +5,7 @@ use App\Http\Controllers\ChartController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\ProgramsController;
+use App\Http\Controllers\TimelineController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
@@ -32,4 +33,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/dashboard/resource/programs', [ProgramsController::class, 'store'])->name('dashboard.programs.store');
     Route::put('/dashboard/resource/programs/{id}', [ProgramsController::class, 'update'])->name('dashboard.programs.update');
     Route::delete('/dashboard/resource/programs/{id}', [ProgramsController::class, 'destroy'])->name('dashboard.programs.destroy');
+    
+    
+    Route::get('/dashboard/resource/timeline', [TimelineController::class, 'index'])->name('dashboard.timeline');
 });
