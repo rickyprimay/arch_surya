@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('documents', function (Blueprint $table) {
+        Schema::create('log_agendas', function (Blueprint $table) {
             $table->id();
-            $table->string('title');
-            $table->unsignedBigInteger('division_id');
-            $table->string('file');
-            $table->string('created_by');
             $table->timestamps();
-
-            $table->foreign('division_id')->references('id')->on('divisions')->onDelete('cascade');
         });
     }
 
@@ -28,6 +22,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('documents');
+        Schema::dropIfExists('log_agendas');
     }
 };

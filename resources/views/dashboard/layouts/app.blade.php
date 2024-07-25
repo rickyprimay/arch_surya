@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Surya Arch</title>
     @vite(['resources/css/app.css','resources/js/app.js'])
-    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
 </head>
 <body class="bg-gray-100">
     @include('dashboard.components.navbar')
@@ -42,6 +42,9 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
     <script>
         @if (session('success'))
             toastr.success("{{ session('success') }}");
@@ -50,7 +53,9 @@
         @if (session('error'))
             toastr.error("{{ session('error') }}");
         @endif
+        
     </script>
+    
     @yield('scripts')
 </body>
 </html>

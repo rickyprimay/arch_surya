@@ -13,7 +13,7 @@ class DivisionSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::table('division')->insert([
+        DB::table('divisions')->insert([
             [
                 'name' => 'SDM', 
                 'created_at' => now(),

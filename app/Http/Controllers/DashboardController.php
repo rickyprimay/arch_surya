@@ -47,7 +47,9 @@ class DashboardController extends Controller
             'role' => $request->role,
         ]);
 
-        return redirect()->route('dashboard.user')->with('success', 'User berhasil ditambahkan');
+        toastr()->success('User berhasil ditambahkan!');
+
+        return redirect()->route('dashboard.user');
     }
 
     public function userEdit(User $user)
@@ -77,12 +79,15 @@ class DashboardController extends Controller
             'role' => $request->role,
         ]);
 
-        return redirect()->route('dashboard.user')->with('success', 'User berhasil diperbarui');
+        toastr()->success('User berhasil diperbarui!');
+
+        return redirect()->route('dashboard.user');
     }
 
     public function userDestroy(User $user)
     {
         $user->delete();
-        return redirect()->route('dashboard.user')->with('success', 'User berhasil dihapus');
+        toastr()->success('User berhasil dihapus!');
+        return redirect()->route('dashboard.user');
     }
 }

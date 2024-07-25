@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ChartController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DocumentsController;
+use App\Http\Controllers\ProgramsController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [AuthController::class, 'showLoginForm'])->name('login');
@@ -16,4 +19,17 @@ Route::middleware('auth')->group(function () {
     Route::get('/dashboard/user/{user}/edit', [DashboardController::class, 'userEdit'])->name('dashboard.user.edit');
     Route::put('/dashboard/user/{user}/update', [DashboardController::class, 'userUpdate'])->name('dashboard.user.update');
     Route::delete('/dashboard/user/{user}/destroy', [DashboardController::class, 'userDestroy'])->name('dashboard.user.destroy');
+    
+    Route::get('/dashboard/resource/document', [DocumentsController::class, 'index'])->name('dashboard.document');
+    Route::post('/dashboard/resource/documents', [DocumentsController::class, 'store'])->name('dashboard.document.store');
+    Route::put('/dashboard/resource/documents/{document}', [DocumentsController::class, 'update'])->name('dashboard.document.update');
+    Route::delete('/dashboard/resource/documents/{document}', [DocumentsController::class, 'destroy'])->name('dashboard.document.destroy');
+
+    Route::get('/dashboard/resource/chart', [ChartController::class, 'index'])->name('dashboard.chart');
+    Route::post('/dashboard/resource/chart', [ChartController::class, 'store'])->name('dashboard.chart.store');
+    
+    Route::get('/dashboard/resource/programs', [ProgramsController::class, 'index'])->name('dashboard.programs');
+    Route::post('/dashboard/resource/programs', [ProgramsController::class, 'store'])->name('dashboard.programs.store');
+    Route::put('/dashboard/resource/programs/{id}', [ProgramsController::class, 'update'])->name('dashboard.programs.update');
+    Route::delete('/dashboard/resource/programs/{id}', [ProgramsController::class, 'destroy'])->name('dashboard.programs.destroy');
 });

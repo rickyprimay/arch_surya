@@ -52,55 +52,43 @@
 
             const chartData = {
                 2024: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
-                        'Dec'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
-                            label: 'Telah Selesai',
-                            data: [1000, 750, 500, 250, 500, 250, 1000, 500, 250, 500, 750, 1000],
-                            backgroundColor: 'rgba(75, 0, 130, 0.2)',
-                            borderColor: 'rgba(75, 0, 130, 1)',
-                            borderWidth: 1,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Dalam Proses',
-                            data: [500, 250, 1000, 500, 250, 500, 750, 500, 250, 1000, 500, 750],
-                            backgroundColor: 'rgba(192, 192, 192, 0.2)',
-                            borderColor: 'rgba(192, 192, 192, 1)',
-                            borderWidth: 1,
-                            fill: true,
-                            tension: 0.4
-                        }
-                    ]
+                        label: 'Telah Selesai',
+                        data: [1000, 750, 500, 250, 500, 250, 1000, 500, 250, 500, 750, 1000],
+                        backgroundColor: 'rgba(75, 0, 130, 0.2)',
+                        borderColor: 'rgba(75, 0, 130, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Dalam Proses',
+                        data: [500, 250, 1000, 500, 250, 500, 750, 500, 250, 1000, 500, 750],
+                        backgroundColor: 'rgba(192, 192, 192, 0.2)',
+                        borderColor: 'rgba(192, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
                 },
                 2023: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov',
-                        'Dec'],
+                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
                     datasets: [{
-                            label: 'Telah Selesai',
-                            data: [900, 800, 700, 600, 700, 800, 900, 600, 700, 800, 900, 1000],
-                            backgroundColor: 'rgba(75, 0, 130, 0.2)',
-                            borderColor: 'rgba(75, 0, 130, 1)',
-                            borderWidth: 1,
-                            fill: true,
-                            tension: 0.4
-                        },
-                        {
-                            label: 'Dalam Proses',
-                            data: [400, 350, 300, 450, 400, 300, 250, 450, 400, 300, 250, 450],
-                            backgroundColor: 'rgba(192, 192, 192, 0.2)',
-                            borderColor: 'rgba(192, 192, 192, 1)',
-                            borderWidth: 1,
-                            fill: true,
-                            tension: 0.4
-                        }
-                    ]
+                        label: 'Telah Selesai',
+                        data: [900, 800, 700, 600, 700, 800, 900, 600, 700, 800, 900, 1000],
+                        backgroundColor: 'rgba(75, 0, 130, 0.2)',
+                        borderColor: 'rgba(75, 0, 130, 1)',
+                        borderWidth: 1
+                    },
+                    {
+                        label: 'Dalam Proses',
+                        data: [400, 350, 300, 450, 400, 300, 250, 450, 400, 300, 250, 450],
+                        backgroundColor: 'rgba(192, 192, 192, 0.2)',
+                        borderColor: 'rgba(192, 192, 192, 1)',
+                        borderWidth: 1
+                    }]
                 }
             };
 
             let myChart = new Chart(ctx, {
-                type: 'line',
+                type: 'bar',
                 data: chartData[2024],
                 options: {
                     responsive: true,
