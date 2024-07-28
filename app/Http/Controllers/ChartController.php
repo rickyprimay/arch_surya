@@ -42,7 +42,7 @@ class ChartController extends Controller
                     ->orderBy('year', 'desc')
                     ->pluck('year');
 
-    $months = range(1, 12); // You can further filter the months based on available data if needed
+    $months = range(1, 12);
 
     return view('dashboard.pages.resources.pages.chart', compact('agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth'));
 }

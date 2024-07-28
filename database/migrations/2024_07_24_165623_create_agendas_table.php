@@ -26,6 +26,7 @@ return new class extends Migration
             $table->string('information')->nullable();
             $table->unsignedBigInteger('city_id');
             $table->unsignedBigInteger('program_id');
+            $table->timestamp('updated_date')->nullable();
             $table->timestamps();
 
             $table->foreign('program_id')->references('id')->on('programs')->onDelete('cascade');
