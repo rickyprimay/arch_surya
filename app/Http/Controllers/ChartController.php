@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Agendas;
 use App\Models\Cities;
+use App\Models\LogAgenda;
 use App\Models\Programs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -44,15 +45,11 @@ class ChartController extends Controller
 
     $months = range(1, 12);
 
-    return view('dashboard.pages.resources.pages.chart', compact('agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth'));
+    $logAgendas = LogAgenda::all();
+
+    return view('dashboard.pages.resources.pages.chart', compact('logAgendas', 'agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth'));
 }
 
-    private function addMonth(&$months, $month)
-    {
-        if (!in_array($month, $months)) {
-            $months[] = $month;
-        }
-    }
 
     public function store(Request $request)
     {
@@ -81,6 +78,12 @@ class ChartController extends Controller
             'program_id' => $request->program_id,
         ]);
 
+        LogAgenda::create([
+            'name' => Auth::user()->name,
+            'status' => 0,
+            'title' => $request->title,
+        ]);
+
         toastr()->success('Agenda Berhasil di tambahkan');
 
         return redirect()->route('dashboard.chart');
@@ -101,11 +104,19 @@ class ChartController extends Controller
         $start_date = Carbon::createFromFormat('Y-m-d', $start_dt_a);
         $end_date = Carbon::createFromFormat('Y-m-d', $end_dt_a);
         $duration_a = $start_date->diffInDays($end_date);
+        $updated_actual = Carbon::createFromTimestamp(Carbon::now()->timestamp)->toDateTimeString();
 
         $agenda->update([
             'start_dt_a' => $start_dt_a,
             'end_dt_a' => $end_dt_a,
             'duration_a' => $duration_a,
+            'updated_actual' => $updated_actual
+        ]);
+
+        LogAgenda::create([
+            'name' => Auth::user()->name,
+            'status' => 1,
+            'title' => $agenda->title,
         ]);
 
         toastr()->success('Actual berhasil diperbarui');

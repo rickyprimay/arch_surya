@@ -34,6 +34,8 @@ class TimelineController extends Controller
         $agenda->information = $request->input('keterangan');
         $agenda->save();
 
-        return redirect()->route('dashboard.timeline')->with('success', 'Keterangan berhasil ditambahkan.');
+        toastr()->success('Berhasil menambahkan keterangan');
+
+        return redirect()->route('dashboard.timeline');
     }
 }
