@@ -39,8 +39,8 @@
             </div>
         </div>
     </div>
-    <div style="width: 100%; margin: auto;">
-        <canvas id="myChart" width="400" height="200"></canvas>
+    <div style="width: 100%; margin: auto;" class="pb-20">
+        <canvas id="myChart" width="400" height="200" class="pb-32"></canvas>
     </div>
 @endsection
 

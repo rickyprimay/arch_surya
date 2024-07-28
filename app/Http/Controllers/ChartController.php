@@ -12,35 +12,40 @@ use Carbon\Carbon;
 class ChartController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Agendas::query();
+{
+    $query = Agendas::query();
 
-        if ($request->filled('city_id')) {
-            $query->where('city_id', $request->city_id);
-        }
-
-        if ($request->filled('program_id')) {
-            $query->where('program_id', $request->program_id);
-        }
-
-        $agendas = $query->get();
-        $cities = Cities::all();
-        $programs = Programs::all();
-
-        $months = [];
-        foreach ($agendas as $agenda) {
-            $startMonthA = date('F', strtotime($agenda->start_dt_a));
-            $endMonthA = date('F', strtotime($agenda->end_dt_a));
-            $startMonthR = date('F', strtotime($agenda->start_dt_r));
-            $endMonthR = date('F', strtotime($agenda->end_dt_r));
-            $this->addMonth($months, $startMonthA);
-            $this->addMonth($months, $endMonthA);
-            $this->addMonth($months, $startMonthR);
-            $this->addMonth($months, $endMonthR);
-        }
-
-        return view('dashboard.pages.resources.pages.chart', compact('agendas', 'cities', 'programs', 'months'));
+    if ($request->filled('city_id')) {
+        $query->where('city_id', $request->city_id);
     }
+
+    if ($request->filled('program_id')) {
+        $query->where('program_id', $request->program_id);
+    }
+
+    $latestAgenda = Agendas::orderBy('start_dt_r', 'desc')->first();
+    $latestYear = $latestAgenda ? date('Y', strtotime($latestAgenda->start_dt_r)) : date('Y');
+    $latestMonth = $latestAgenda ? date('m', strtotime($latestAgenda->start_dt_r)) : date('m');
+
+    $selectedYear = $request->input('year', $latestYear);
+    $selectedMonth = $request->input('month', $latestMonth);
+
+    $query->whereYear('start_dt_r', $selectedYear)
+          ->whereMonth('start_dt_r', $selectedMonth);
+
+    $agendas = $query->get();
+    $cities = Cities::all();
+    $programs = Programs::all();
+
+    $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
+                    ->distinct()
+                    ->orderBy('year', 'desc')
+                    ->pluck('year');
+
+    $months = range(1, 12); // You can further filter the months based on available data if needed
+
+    return view('dashboard.pages.resources.pages.chart', compact('agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth'));
+}
 
     private function addMonth(&$months, $month)
     {
