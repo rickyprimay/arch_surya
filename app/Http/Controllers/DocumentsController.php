@@ -23,7 +23,7 @@ class DocumentsController extends Controller
         $validator = Validator::make($request->all(), [
             'title' => 'required|string|max:255',
             'division_id' => 'required|exists:divisions,id',
-            'file' => 'required|file|mimes:pdf,doc,docx|max:2048',
+            'file' => 'required|file|mimes:pdf,doc,docx',
         ]);
 
         if ($validator->fails()) {
