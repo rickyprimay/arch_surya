@@ -24,8 +24,7 @@
                 <h1 class="text-2xl font-semibold text-white">Selamat Datang!</h1>
             </div>
             @if ($errors->any())
-                <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50"
-                    role="alert">
+                <div class="flex p-4 mb-4 text-sm text-red-800 rounded-lg bg-red-50" role="alert">
                     <svg class="flex-shrink-0 inline w-4 h-4 me-3 mt-[2px]" aria-hidden="true"
                         xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
                         <path
@@ -42,10 +41,10 @@
             <form action="{{ route('login') }}" method="POST">
                 @csrf
                 <div class="mb-4">
-                    <label for="email" class="text-white mb-1 flex flex-start">Email</label>
-                    <input type="text" id="email" name="email"
+                    <label for="username" class="text-white mb-1 flex flex-start">Username</label>
+                    <input type="text" id="username" name="username"
                         class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:border-blue-500"
-                        autocomplete="off" placeholder="email@example.com" required />
+                        autocomplete="off" placeholder="Username anda" required />
                 </div>
                 <div class="mb-4">
                     <label for="password" class="text-white mb-1 flex flex-start">Password</label>
