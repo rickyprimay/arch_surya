@@ -2,6 +2,14 @@
 
 @section('content')
 <div class="max-w-4xl mx-auto py-6 sm:px-6 lg:px-8">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="font-bold text-2xl">User</h1>
+        @if(isset($user))
+        <p class="text-gray-400">Surya Arch / Edit User</p>
+        @else
+        <p class="text-gray-400">Surya Arch / Tambah User</p>
+        @endif
+    </div>
     <div class="overflow-hidden bg-white shadow-sm sm:rounded-lg">
         <div class="p-6 bg-white border-b border-gray-200">
             <h2 class="text-lg font-semibold text-gray-700 mb-6">{{ isset($user) ? 'Edit User' : 'Tambah User' }}</h2>

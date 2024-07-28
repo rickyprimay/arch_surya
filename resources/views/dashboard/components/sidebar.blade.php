@@ -20,7 +20,7 @@
             @endif
 
             @php
-                $isDropdownActive = Route::is('dashboard.document*') || Route::is('dashboard.programs*') || Route::is('dashboard.chart*');
+                $isDropdownActive = Route::is('dashboard.document*') || Route::is('dashboard.programs*') || Route::is('dashboard.chart*') || Route::is('dashboard.timeline*');
             @endphp
 
             <li>

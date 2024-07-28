@@ -1,7 +1,12 @@
 @extends('dashboard.layouts.app')
 
 @section('content')
+
     <div class="p-4">
+        <div class="flex justify-between items-center mb-4">
+            <h1 class="font-bold text-2xl">Dokumen  </h1>
+            <p class="text-gray-400">Surya Arch / Sumber Daya / Dokumen</p>
+        </div>
         <!-- Add Document Button -->
         <button data-modal-target="create-modal" data-modal-toggle="create-modal"
             class="flex items-center text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -10,7 +15,7 @@
                 xmlns="http://www.w3.org/2000/svg">
                 <path d="M12 4v16m-8-8h16"></path>
             </svg>
-            Tambah Document
+            Tambah Dokumen
         </button>
 
         <!-- Documents Table -->

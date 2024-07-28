@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="">
+  <div class="flex justify-between items-center mb-4">
+        <h1 class="font-bold text-2xl">User</h1>
+        <p class="text-gray-400">Surya Arch / User</p>
+    </div>
   <a href="{{ route('dashboard.user.create') }}" class="bg-green-500 text-white py-2 px-4 rounded-lg mb-4 inline-flex items-center">
     <svg class="w-4 h-4 me-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path d="M12 4v16m-8-8h16"></path></svg>
     Tambah User
