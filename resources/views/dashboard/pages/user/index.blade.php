@@ -37,6 +37,8 @@
               @elseif($user->role == 2)
                 Prodi
               @elseif($user->role == 3)
+                Kelompok Keahlian
+              @elseif($user->role == 4)
                 Staf
               @else
                 Lainnya
