@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('created_by');
             $table->date('start_dt_a')->nullable();
             $table->date('start_dt_r');
-            $table->date('end_dt_a');
+            $table->date('end_dt_a')->nullable();
             $table->date('end_dt_r');
             $table->unsignedBigInteger('city_id');
             $table->unsignedBigInteger('program_id');
