@@ -10,15 +10,16 @@
     </div>
     <div class="mb-4">
         <select id="yearFilter" class="p-2 border rounded">
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
+            @foreach($years as $year)
+                <option value="{{ $year }}">{{ $year }}</option>
+            @endforeach
         </select>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
             <div class="flex justify-between items-center">
                 <div>
-                    <div class="text-2xl font-bold pb-4" id="total-completed">0</div>
+                    <div class="text-2xl font-bold pb-4" id="total-completed">{{ $totalActual }}</div>
                     <div class="text-lg">Telah Selesai</div>
                 </div>
                 <div>
@@ -29,7 +30,7 @@
         <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
             <div class="flex justify-between items-center">
                 <div>
-                    <div class="text-2xl font-bold pb-4" id="total-in-progress">0</div>
+                    <div class="text-2xl font-bold pb-4" id="total-in-progress">{{ $totalPlan }}</div>
                     <div class="text-lg">Dalam Proses</div>
                 </div>
                 <div>
@@ -50,46 +51,11 @@
             const yearFilter = document.getElementById('yearFilter');
             const ctx = document.getElementById('myChart').getContext('2d');
 
-            const chartData = {
-                2024: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: [{
-                        label: 'Telah Selesai',
-                        data: [1000, 750, 500, 250, 500, 250, 1000, 500, 250, 500, 750, 1000],
-                        backgroundColor: 'rgba(75, 0, 130, 0.2)',
-                        borderColor: 'rgba(75, 0, 130, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Dalam Proses',
-                        data: [500, 250, 1000, 500, 250, 500, 750, 500, 250, 1000, 500, 750],
-                        backgroundColor: 'rgba(192, 192, 192, 0.2)',
-                        borderColor: 'rgba(192, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                },
-                2023: {
-                    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-                    datasets: [{
-                        label: 'Telah Selesai',
-                        data: [900, 800, 700, 600, 700, 800, 900, 600, 700, 800, 900, 1000],
-                        backgroundColor: 'rgba(75, 0, 130, 0.2)',
-                        borderColor: 'rgba(75, 0, 130, 1)',
-                        borderWidth: 1
-                    },
-                    {
-                        label: 'Dalam Proses',
-                        data: [400, 350, 300, 450, 400, 300, 250, 450, 400, 300, 250, 450],
-                        backgroundColor: 'rgba(192, 192, 192, 0.2)',
-                        borderColor: 'rgba(192, 192, 192, 1)',
-                        borderWidth: 1
-                    }]
-                }
-            };
+            const chartData = @json($chartData);
 
             let myChart = new Chart(ctx, {
                 type: 'bar',
-                data: chartData[2024],
+                data: chartData[yearFilter.value],
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
