@@ -2,7 +2,13 @@
 
 @section('content')
 <div class="p-4">
-    <form action="{{ route('dashboard.timeline') }}" method="GET" class="flex justify-end space-x-4 mb-4">
+    <form action="{{ route('dashboard.timeline') }}" method="GET" class="flex justify-end space-x-4 mb-4 items-center">
+        <div class="flex items-center space-x-2 mr-auto">
+            <span class="inline-block w-6 h-6 rounded-full bg-red-500"></span>
+            <p class="text-sm text-left rtl:text-right text-black">Tidak Tepat Waktu</p>
+            <span class="inline-block w-6 h-6 rounded-full bg-green-500 ml-4"></span>
+            <p class="text-sm text-left rtl:text-right text-black">Tepat Waktu</p>
+        </div>
         <div>
             <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kota</label>
             <select id="city_id" name="city_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
@@ -36,6 +42,7 @@
                     <th rowspan="2" class="px-4 py-2 ">Status</th>
                     <th rowspan="2" class="px-4 py-2 ">Rencana SLA</th>
                     <th rowspan="2" class="px-4 py-2 ">Actual</th>
+                    <th rowspan="2" class="px-4 py-2 ">Dibuat Pada</th>
                 </tr>
             </thead>
             <tbody class="border-t border-gray-300">
@@ -60,6 +67,7 @@
                             </td>
                             <td class="px-4 py-2">{{ $agenda->start_dt_r }} - {{ $agenda->end_dt_r }}</td>
                             <td class="px-4 py-2">{{ $agenda->start_dt_a }} - {{ $agenda->end_dt_a }}</td>
+                            <td class="px-4 py-2">{{ $agenda->created_at }}</td>
                         </tr>
                     @endforeach
                 @endif
