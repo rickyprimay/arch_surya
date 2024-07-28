@@ -27,7 +27,13 @@ class TimelineController extends Controller
 
         return view('dashboard.pages.resources.pages.timeline', compact('agendas', 'cities', 'programs'));
     }
-    public function addInformation($id){
-        
+
+    public function addInformation(Request $request, $id)
+    {
+        $agenda = Agendas::findOrFail($id);
+        $agenda->information = $request->input('keterangan');
+        $agenda->save();
+
+        return redirect()->route('dashboard.timeline')->with('success', 'Keterangan berhasil ditambahkan.');
     }
 }

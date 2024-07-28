@@ -5,9 +5,9 @@
     <div class="flex justify-end space-x-4 mb-4">
         <form action="{{ route('dashboard.chart') }}" method="GET" class="flex space-x-4">
             <div>
-                <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Kota</label>
+                <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900 ">Kota</label>
                 <select id="city_id" name="city_id"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 ">
                     <option value="">Semua Kota</option>
                     @foreach ($cities as $city)
                         <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>
@@ -16,9 +16,9 @@
                 </select>
             </div>
             <div>
-                <label for="program_id" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white">Program</label>
+                <label for="program_id" class="block mb-2 text-sm font-medium text-gray-900 ">Program</label>
                 <select id="program_id" name="program_id"
-                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500">
+                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5 ">
                     <option value="">Semua Program</option>
                     @foreach ($programs as $program)
                         <option value="{{ $program->id }}" {{ request('program_id') == $program->id ? 'selected' : '' }}>
@@ -108,7 +108,7 @@
                                 <td colspan="2" class="border border-gray-300 px-4 py-2 text-center">
                                     <button data-modal-target="adding-actual-modal-{{ $agenda->id }}"
                                         data-modal-toggle="adding-actual-modal-{{ $agenda->id }}" type="button"
-                                        class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300 dark:focus:ring-green-800 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Tambah</button>
+                                        class="text-white bg-gradient-to-r from-green-400 via-green-500 to-green-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-green-300  font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Tambah</button>
                                 </td>
                             @endif
 
@@ -174,7 +174,7 @@
                             <div class="flex gap-4 mb-2">
                                 <div class="relative w-full">
                                     <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                             viewBox="0 0 20 20">
                                             <path
@@ -182,14 +182,14 @@
                                         </svg>
                                     </div>
                                     <input id="datepicker-range-start-a" name="start_dt_a" type="text"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 "
                                         placeholder="Select date start" autocomplete="off"
                                         value="">
                                 </div>
                                 <span class="flex items-center text-gray-500">to</span>
                                 <div class="relative w-full">
                                     <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                             viewBox="0 0 20 20">
                                             <path
@@ -197,7 +197,7 @@
                                         </svg>
                                     </div>
                                     <input id="datepicker-range-end-a" name="end_dt_a" type="text"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 "
                                         placeholder="Select date end" autocomplete="off"
                                         value="">
                                 </div>
@@ -260,7 +260,7 @@
                             <div class="flex gap-4 mb-2">
                                 <div class="relative w-full">
                                     <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                             viewBox="0 0 20 20">
                                             <path
@@ -268,13 +268,13 @@
                                         </svg>
                                     </div>
                                     <input id="datepicker-range-start-r" name="start_dt_r" type="text"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 "
                                         placeholder="Select date start" autocomplete="off">
                                 </div>
                                 <span class="flex items-center text-gray-500">to</span>
                                 <div class="relative w-full">
                                     <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                        <svg class="w-4 h-4 text-gray-500 dark:text-gray-400" aria-hidden="true"
+                                        <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
                                             xmlns="http://www.w3.org/2000/svg" fill="currentColor"
                                             viewBox="0 0 20 20">
                                             <path
@@ -282,7 +282,7 @@
                                         </svg>
                                     </div>
                                     <input id="datepicker-range-end-r" name="end_dt_r" type="text"
-                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5 "
                                         placeholder="Select date end" autocomplete="off">
                                 </div>
                             </div>
