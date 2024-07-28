@@ -23,6 +23,7 @@ return new class extends Migration
             $table->date('start_dt_r');
             $table->date('end_dt_a')->nullable();
             $table->date('end_dt_r');
+            $table->string('information')->nullable();
             $table->unsignedBigInteger('city_id');
             $table->unsignedBigInteger('program_id');
             $table->timestamps();

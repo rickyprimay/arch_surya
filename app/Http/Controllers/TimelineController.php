@@ -27,4 +27,7 @@ class TimelineController extends Controller
 
         return view('dashboard.pages.resources.pages.timeline', compact('agendas', 'cities', 'programs'));
     }
+    public function addInformation($id){
+        
+    }
 }

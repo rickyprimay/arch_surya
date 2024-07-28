@@ -19,7 +19,8 @@ class Agendas extends Model
         'end_dt_a', 
         'end_dt_r', 
         'city_id', 
-        'program_id'
+        'program_id',
+        'information'
     ];
 
     public function city()

@@ -43,6 +43,7 @@
                     <th rowspan="2" class="px-4 py-2 ">Rencana SLA</th>
                     <th rowspan="2" class="px-4 py-2 ">Actual</th>
                     <th rowspan="2" class="px-4 py-2 ">Dibuat Pada</th>
+                    <th rowspan="2" class="px-4 py-2 ">Keterangan</th>
                 </tr>
             </thead>
             <tbody class="border-t border-gray-300">
