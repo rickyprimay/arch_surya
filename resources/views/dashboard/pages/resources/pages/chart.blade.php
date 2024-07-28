@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="p-4">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="font-bold text-2xl">Chart  </h1>
+        <p class="text-gray-400">Surya Arch / Sumber Daya / Chart</p>
+    </div>
     <div class="flex justify-end space-x-4 mb-4">
         <form action="{{ route('dashboard.chart') }}" method="GET" class="flex space-x-4">
             <div>

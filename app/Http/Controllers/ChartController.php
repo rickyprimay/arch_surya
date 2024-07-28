@@ -64,7 +64,7 @@ class ChartController extends Controller
 
         $start_date = Carbon::createFromFormat('Y-m-d', $start_dt_r);
         $end_date = Carbon::createFromFormat('Y-m-d', $end_dt_r);
-        $duration_r = $start_date->diffInDays($end_date);
+        $duration_r = $start_date->diffInDays($end_date) + 1;
 
         Agendas::create([
             'title' => $request->title,

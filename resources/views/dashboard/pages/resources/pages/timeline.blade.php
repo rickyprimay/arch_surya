@@ -2,6 +2,10 @@
 
 @section('content')
 <div class="p-4">
+    <div class="flex justify-between items-center mb-4">
+        <h1 class="font-bold text-2xl">Timeline  </h1>
+        <p class="text-gray-400">Surya Arch / Sumber Daya / Timeline</p>
+    </div>
     <form action="{{ route('dashboard.timeline') }}" method="GET" class="flex justify-end space-x-4 mb-4 items-center">
         <div class="flex items-center space-x-2 mr-auto">
             <span class="inline-block w-6 h-6 rounded-full bg-red-500"></span>

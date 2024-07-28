@@ -18,21 +18,21 @@ class DashboardController extends Controller
     $totalActual = Agendas::whereNotNull('end_dt_a')->count();
     $totalPlan = Agendas::whereNull('end_dt_a')->count();
 
-    // Extract unique years from agendas
-    $years = Agendas::selectRaw('YEAR(created_at) as year')
+    // Extract unique years from agendas using start_dt_r
+    $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
                     ->distinct()
                     ->orderBy('year', 'desc')
                     ->pluck('year');
 
-    // Group agendas by year and month
+    // Group agendas by year and month based on start_dt_r
     $agendasByYear = $agendas->groupBy(function($item) {
-        return $item->created_at->format('Y');
+        return \Carbon\Carbon::parse($item->start_dt_r)->format('Y');
     });
 
     $chartData = [];
     foreach ($agendasByYear as $year => $yearAgendas) {
         $monthlyData = $yearAgendas->groupBy(function($item) {
-            return $item->created_at->format('n'); // Group by month number
+            return \Carbon\Carbon::parse($item->start_dt_r)->format('n'); // Group by month number
         });
 
         $completedData = [];

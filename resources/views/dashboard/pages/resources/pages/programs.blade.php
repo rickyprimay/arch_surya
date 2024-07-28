@@ -3,7 +3,7 @@
 @section('content')
 <div class="p-4">
     <div class="flex justify-between items-center mb-4">
-        <h1 class="font-bold text-2xl">Dokumen  </h1>
+        <h1 class="font-bold text-2xl">Program  </h1>
         <p class="text-gray-400">Surya Arch / Sumber Daya / Program</p>
     </div>
     <!-- Add Document Button -->
