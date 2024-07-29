@@ -38,11 +38,13 @@
                             <span>Dokumen</span>
                         </a>
                     </li>
+                    @if (Auth::user()->role == 0 || Auth::user()->role == 1 || Auth::user()->role == 4)
                     <li>
                         <a href="{{ route('dashboard.programs') }}" class="flex items-center p-2 text-gray-900 rounded-lg {{ Route::is('dashboard.programs*') ? 'bg-gray-100' : 'hover:bg-gray-100 group' }}">
                             <span>Program</span>
                         </a>
                     </li>
+                    @endif
                     <li>
                         <a href="{{ route('dashboard.chart') }}" class="flex items-center p-2 text-gray-900 rounded-lg {{ Route::is('dashboard.chart*') ? 'bg-gray-100' : 'hover:bg-gray-100 group' }}">
                             <span>Gantt Chart</span>

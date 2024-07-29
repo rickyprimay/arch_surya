@@ -137,7 +137,7 @@
                                 @endfor
                             </tr>
                             <tr>
-                                @if ($agenda->duration_a > 0 && $agenda->end_dt_a != null)
+                                @if ($agenda->end_dt_a != null)
                                     <td class="border border-gray-300 px-4 py-2">{{ $agenda->duration_a }}</td>
                                     <td class="border border-gray-300 px-4 py-2">A</td>
                                 @else
@@ -222,8 +222,9 @@
                         </div>
                         <!-- Modal body -->
                         <form class="p-4 md:p-5" method="POST"
-                            action="{{ route('dashboard.chart.update', $agenda->id) }}">
+                            action="{{ route('dashboard.chart.updateActual', $agenda->id) }}">
                             @csrf
+                            @method('put')
                             <div class="grid gap-4 mb-4 grid-cols-2">
                                 <!-- Date Range Picker for A -->
                                 <div id="date-range-picker-a" date-rangepicker class="flex flex-col col-span-2 mb-2">
@@ -348,6 +349,7 @@
                             </div>
                         </div>
                         <!-- Date Range Picker for A -->
+                        @if($agenda->start_dt_a != null && $agenda->end_dt_a != null)
                         <div id="date-range-picker-a-edit" date-rangepicker class="flex flex-col col-span-2 mb-2">
                             <label for="start_dt_a" class="block text-sm font-medium text-gray-900 mb-2">Tanggal Mulai dan Selesai (A)</label>
                             <div class="flex gap-4 mb-2">
@@ -382,6 +384,7 @@
                                 </div>
                             </div>
                         </div>
+                        @endif
                         <div class="col-span-2">
                             <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900">Kota</label>
                             <select name="city_id" id="city_id"

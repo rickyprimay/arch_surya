@@ -4,6 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="icon" type="image/x-icon" href="{{ asset('assets/logo/logo-telkom.png') }}" />
     <title>Surya Arch</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 </head>
@@ -12,7 +13,7 @@
     <div class="bg-[#ffffff] flex justify-center items-center h-screen">
         <div class="relative h-screen hidden lg:block" style="width: 100%">
             <img src="{{ asset('assets/img/water.png') }}" alt="Image Water" class="object-cover w-full h-full" />
-            <div class="absolute top-0 left-0 w-full h-full flex justify-center items-center">
+            <div class="absolute top-10 left-0 w-full h-full flex justify-center items-center">
                 <img src="{{ asset('assets/logo/logo-fri.png') }}" alt="Logo Fakultas" class="w-3/4" />
             </div>
         </div>

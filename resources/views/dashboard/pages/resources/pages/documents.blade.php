@@ -7,6 +7,7 @@
             <h1 class="font-bold text-2xl">Dokumen  </h1>
             <p class="text-gray-400">Surya Arch / Sumber Daya / Dokumen</p>
         </div>
+        @if(Auth::user()->role == 0 || Auth::user()->role == 1 || Auth::user()->role == 4)
         <!-- Add Document Button -->
         <button data-modal-target="create-modal" data-modal-toggle="create-modal"
             class="flex items-center text-white bg-green-500 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center"
@@ -17,7 +18,7 @@
             </svg>
             Tambah Dokumen
         </button>
-
+        @endif
         <!-- Documents Table -->
         <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4 border border-black">
             <table class="w-full text-sm text-left rtl:text-right text-gray-500 table-border">
@@ -27,7 +28,9 @@
                         <th scope="col" class="px-6 py-3">Nama</th>
                         <th scope="col" class="px-6 py-3">Urusan</th>
                         <th scope="col" class="px-6 py-3">File</th>
+                        @if(Auth::user()->role == 0 || Auth::user()->role == 1 || Auth::user()->role == 4)
                         <th scope="col" class="px-6 py-3">Aksi</th>
+                        @endif
                     </tr>
                 </thead>
                 <tbody>
@@ -40,6 +43,7 @@
                                 <a href="{{ asset('storage/' . $document->file) }}" class="text-blue-500 hover:underline"
                                     target="_blank">View File</a>
                             </td>
+                            @if(Auth::user()->role == 0 || Auth::user()->role == 1 || Auth::user()->role == 4)
                             <td class="px-6 py-4">
                                 <button data-modal-target="edit-modal-{{ $document->id }}"
                                     data-modal-toggle="edit-modal-{{ $document->id }}"
@@ -48,6 +52,7 @@
                                     class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
                                     data-modal-toggle="popup-modal" data-document-id="{{ $document->id }}">Delete</button>
                             </td>
+                            @endif
                         </tr>
                     @empty
                         <tr>

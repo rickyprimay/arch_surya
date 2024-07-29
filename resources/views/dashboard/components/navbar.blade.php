@@ -19,7 +19,7 @@
                         <img src="{{ asset('assets/icon/user.svg') }}" class="w-[20px]" alt="User Icon">
                         <span>{{ Auth::user()->name }}</span>
                     </div>
-                    <button data-modal-target="popup-modal" data-modal-toggle="popup-modal" type="button" class="flex items-center space-x-2 bg-white p-2 rounded-lg cursor-pointer">
+                    <button data-modal-target="popups-modal" data-modal-toggle="popups-modal" type="button" class="flex items-center space-x-2 bg-white p-2 rounded-lg cursor-pointer">
                         <img src="{{ asset('assets/icon/logout.svg') }}" class="w-[20px]" alt="Logout Icon">
                         <span>Logout</span>
                     </button>
