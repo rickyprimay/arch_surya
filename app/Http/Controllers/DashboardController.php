@@ -14,17 +14,14 @@ class DashboardController extends Controller
 {
     $agendas = Agendas::all();
 
-    // Count the number of records with a non-null end_dt_a
     $totalActual = Agendas::whereNotNull('end_dt_a')->count();
     $totalPlan = Agendas::whereNull('end_dt_a')->count();
 
-    // Extract unique years from agendas using start_dt_r
     $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
                     ->distinct()
                     ->orderBy('year', 'desc')
                     ->pluck('year');
 
-    // Group agendas by year and month based on start_dt_r
     $agendasByYear = $agendas->groupBy(function($item) {
         return \Carbon\Carbon::parse($item->start_dt_r)->format('Y');
     });
@@ -32,7 +29,7 @@ class DashboardController extends Controller
     $chartData = [];
     foreach ($agendasByYear as $year => $yearAgendas) {
         $monthlyData = $yearAgendas->groupBy(function($item) {
-            return \Carbon\Carbon::parse($item->start_dt_r)->format('n'); // Group by month number
+            return \Carbon\Carbon::parse($item->start_dt_r)->format('n');
         });
 
         $completedData = [];
@@ -64,8 +61,7 @@ class DashboardController extends Controller
     }
 
     return view('dashboard.index', compact('agendas', 'totalActual', 'totalPlan', 'years', 'chartData'));
-}
-
+}  
 
     public function user()
     {
