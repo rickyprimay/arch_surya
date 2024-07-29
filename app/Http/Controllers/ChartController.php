@@ -187,4 +187,20 @@ class ChartController extends Controller
 
         return redirect()->route('dashboard.chart');
     }
+    public function destroy($id)
+    {
+        $agenda = Agendas::findOrFail($id);
+        $agendaTitle = $agenda->title;
+        $agenda->delete();
+
+        LogAgenda::create([
+            'name' => Auth::user()->name,
+            'status' => 3, // Status 3 untuk log penghapusan
+            'title' => $agendaTitle,
+        ]);
+
+        toastr()->success('Agenda Berhasil dihapus');
+
+        return redirect()->route('dashboard.chart');
+    }
 }
