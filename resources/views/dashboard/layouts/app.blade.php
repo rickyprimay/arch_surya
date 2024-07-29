@@ -6,6 +6,7 @@
     <title>Surya Arch</title>
     @vite(['resources/css/app.css','resources/js/app.js'])
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/logo/logo-telkom.png') }}" />
+    <link rel="stylesheet" href="{{ asset('build/assets/app.[hash].css') }}" />
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
     {{-- <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script> --}}
 </head>
