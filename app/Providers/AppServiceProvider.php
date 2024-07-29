@@ -21,5 +21,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
+        if (!function_exists('symlink')) {
+            app()->bind('path.public', function() {
+                return base_path().'/public';
+            });
+        }
     }
 }
