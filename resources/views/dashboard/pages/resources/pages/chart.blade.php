@@ -82,7 +82,7 @@
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">R/A</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Aksi</th>
                         @if ($agendas->isNotEmpty())
-                            <th colspan="30" class="px-4 py-2 border border-gray-300 bg-gray-200 z-0">
+                            <th colspan="{{ $daysInMonth }}" class="px-4 py-2 border border-gray-300 bg-gray-200 z-0">
                                 <button id="dropdownButton" type="button" class="w-full text-left focus:outline-none">
                                     <span>{{ DateTime::createFromFormat('!m', $selectedMonth)->format('F') }}
                                         {{ $selectedYear }}</span>
@@ -92,7 +92,7 @@
                     </tr>
                     @if ($agendas->isNotEmpty())
                         <tr>
-                            @for ($i = 1; $i <= 30; $i++)
+                            @for ($i = 1; $i <= $daysInMonth; $i++)
                                 <th class="px-4 py-2 border border-gray-300">{{ $i }}</th>
                             @endfor
                         </tr>
@@ -118,7 +118,7 @@
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 text-nowrap"><button data-modal-target="edit-modal-{{ $agenda->id }}"
                                     data-modal-toggle="edit-modal-{{ $agenda->id }}" type="button"
                                     class="text-white bg-gradient-to-r from-blue-400 via-blue-500 to-blue-600 hover:bg-gradient-to-br focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center me-2 mb-2">Edit</button></td>
-                                @for ($i = 1; $i <= 30; $i++)
+                                @for ($i = 1; $i <= $daysInMonth; $i++)
                                     @php
                                         $date = date(
                                             'Y-m-d',
@@ -148,7 +148,7 @@
                                     </td>
                                 @endif
 
-                                @for ($i = 1; $i <= 30; $i++)
+                                @for ($i = 1; $i <= $daysInMonth; $i++)
                                     @php
                                         $date = date(
                                             'Y-m-d',
