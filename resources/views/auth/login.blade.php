@@ -7,7 +7,8 @@
     <link rel="icon" type="image/x-icon" href="{{ asset('assets/logo/logo-telkom.png') }}" />
     <title>Surya Arch</title>
     @vite(['resources/css/app.css', 'resources/js/app.js'])
-    <link rel="stylesheet" href="{{ asset('build/assets/app.[hash].css') }}" />
+    <link href="{{ asset('build/assets/app-CRAIdXW3.css') }}" rel="stylesheet">
+    <script src="{{ asset('build/assets/app-KEEtJs3M.js') }}" defer></script>
 </head>
 
 <body>
