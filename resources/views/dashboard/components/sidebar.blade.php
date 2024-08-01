@@ -60,7 +60,7 @@
         </ul>
         <ul class="font-medium">
             <li>
-                <a href="#" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
+                <a href="{{ asset('assets/guide/userGuide.pdf') }}" target="__blank" class="flex items-center p-2 text-gray-900 rounded-lg hover:bg-gray-100 group">
                     <img src="{{ asset('assets/icon/book.svg') }}" class="w-[30px]">
                     <span class="ms-3">Buku Panduan</span>
                 </a>
