@@ -34,7 +34,7 @@ class AuthController extends Controller
             return redirect()
                 ->route('login')
                 ->withErrors([
-                    'username' => 'The provided credentials do not match our records.',
+                    'username' => 'Password atau Username salah.',
                 ]);
         }
     }
