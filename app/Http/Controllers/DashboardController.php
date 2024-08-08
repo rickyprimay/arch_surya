@@ -11,57 +11,86 @@ use Illuminate\Support\Facades\Validator;
 class DashboardController extends Controller
 {
     public function index()
-{
-    $agendas = Agendas::all();
+    {
+        $agendas = Agendas::all();
 
-    $totalActual = Agendas::whereNotNull('end_dt_a')->count();
-    $totalPlan = Agendas::whereNull('end_dt_a')->count();
+        $totalActual = Agendas::whereNotNull('end_dt_a')->count();
+        $totalPlan = Agendas::whereNull('end_dt_a')->count();
+        $totalOnTime = Agendas::whereNotNull('end_dt_a')
+                              ->whereColumn('end_dt_a', '<=', 'end_dt_r')
+                              ->count();
+        $totalLate = Agendas::whereNotNull('end_dt_a')
+                            ->whereColumn('end_dt_a', '>', 'end_dt_r')
+                            ->count();
 
-    $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
-                    ->distinct()
-                    ->orderBy('year', 'desc')
-                    ->pluck('year');
+        $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
+                        ->distinct()
+                        ->orderBy('year', 'desc')
+                        ->pluck('year');
 
-    $agendasByYear = $agendas->groupBy(function($item) {
-        return \Carbon\Carbon::parse($item->start_dt_r)->format('Y');
-    });
-
-    $chartData = [];
-    foreach ($agendasByYear as $year => $yearAgendas) {
-        $monthlyData = $yearAgendas->groupBy(function($item) {
-            return \Carbon\Carbon::parse($item->start_dt_r)->format('n');
+        $agendasByYear = $agendas->groupBy(function($item) {
+            return \Carbon\Carbon::parse($item->start_dt_r)->format('Y');
         });
 
-        $completedData = [];
-        $inProgressData = [];
-        for ($i = 1; $i <= 12; $i++) {
-            $completedData[] = isset($monthlyData[$i]) ? $monthlyData[$i]->whereNotNull('end_dt_a')->count() : 0;
-            $inProgressData[] = isset($monthlyData[$i]) ? $monthlyData[$i]->whereNull('end_dt_a')->count() : 0;
+        $chartData = [];
+        foreach ($agendasByYear as $year => $yearAgendas) {
+            $monthlyData = $yearAgendas->groupBy(function($item) {
+                return \Carbon\Carbon::parse($item->start_dt_r)->format('n');
+            });
+
+            $completedData = [];
+            $inProgressData = [];
+            $onTimeData = [];
+            $lateData = [];
+            for ($i = 1; $i <= 12; $i++) {
+                $monthlyAgendas = isset($monthlyData[$i]) ? $monthlyData[$i] : collect([]);
+                $completedData[] = $monthlyAgendas->whereNotNull('end_dt_a')->count();
+                $inProgressData[] = $monthlyAgendas->whereNull('end_dt_a')->count();
+                $onTimeData[] = $monthlyAgendas->filter(function($agenda) {
+                    return $agenda->end_dt_a && $agenda->end_dt_a <= $agenda->end_dt_r;
+                })->count();
+                $lateData[] = $monthlyAgendas->filter(function($agenda) {
+                    return $agenda->end_dt_a && $agenda->end_dt_a > $agenda->end_dt_r;
+                })->count();
+            }
+
+            $chartData[$year] = [
+                'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                'datasets' => [
+                    [
+                        'label' => 'Telah Selesai',
+                        'data' => $completedData,
+                        'backgroundColor' => 'rgba(75, 0, 130, 0.2)',
+                        'borderColor' => 'rgba(75, 0, 130, 1)',
+                        'borderWidth' => 1
+                    ],
+                    [
+                        'label' => 'Dalam Proses',
+                        'data' => $inProgressData,
+                        'backgroundColor' => 'rgba(192, 192, 192, 0.2)',
+                        'borderColor' => 'rgba(192, 192, 192, 1)',
+                        'borderWidth' => 1
+                    ],
+                    [
+                        'label' => 'Tepat Waktu',
+                        'data' => $onTimeData,
+                        'backgroundColor' => 'rgba(0, 255, 0, 0.2)',
+                        'borderColor' => 'rgba(0, 255, 0, 1)',
+                        'borderWidth' => 1
+                    ],
+                    [
+                        'label' => 'Tidak Tepat Waktu',
+                        'data' => $lateData,
+                        'backgroundColor' => 'rgba(255, 0, 0, 0.2)',
+                        'borderColor' => 'rgba(255, 0, 0, 1)',
+                        'borderWidth' => 1
+                    ]
+                ]
+            ];
         }
 
-        $chartData[$year] = [
-            'labels' => ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            'datasets' => [
-                [
-                    'label' => 'Telah Selesai',
-                    'data' => $completedData,
-                    'backgroundColor' => 'rgba(75, 0, 130, 0.2)',
-                    'borderColor' => 'rgba(75, 0, 130, 1)',
-                    'borderWidth' => 1
-                ],
-                [
-                    'label' => 'Dalam Proses',
-                    'data' => $inProgressData,
-                    'backgroundColor' => 'rgba(192, 192, 192, 0.2)',
-                    'borderColor' => 'rgba(192, 192, 192, 1)',
-                    'borderWidth' => 1
-                ]
-            ]
-        ];
+        return view('dashboard.index', compact('agendas', 'totalActual', 'totalPlan', 'totalOnTime', 'totalLate', 'years', 'chartData'));
     }
-
-    return view('dashboard.index', compact('agendas', 'totalActual', 'totalPlan', 'years', 'chartData'));
-}  
 
     public function user()
     {

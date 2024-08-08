@@ -3,8 +3,8 @@
 @section('content')
 <div class="p-4">
     <div class="flex justify-between items-center mb-4">
-        <h1 class="font-bold text-2xl">Timeline</h1>
-        <p class="text-gray-400">Surya Arch / Sumber Daya / Timeline</p>
+        <h1 class="font-bold text-2xl">Report</h1>
+        <p class="text-gray-400">Surya Arch / Sumber Daya / Report</p>
     </div>
     <form action="{{ route('dashboard.timeline') }}" method="GET" class="flex justify-end space-x-4 mb-4 items-center">
         <div class="flex items-center space-x-2 mr-auto">
@@ -44,13 +44,13 @@
                     <th rowspan="2" class="px-4 py-2">Agenda</th>
                     <th rowspan="2" class="px-4 py-2">Dibuat oleh</th>
                     <th rowspan="2" class="px-4 py-2">Status</th>
-                    <th rowspan="2" class="px-4 py-2">Rencana SLA</th>
-                    <th rowspan="2" class="px-4 py-2">Actual</th>
+                    <th rowspan="2" class="px-4 py-2">Rencana</th>
+                    <th rowspan="2" class="px-4 py-2">Aktual</th>
                     <th rowspan="2" class="px-4 py-2">Dibuat Pada</th>
                     <th rowspan="2" class="px-4 py-2">Keterangan</th>
                 </tr>
             </thead>
-            <tbody class="border-t border-gray-300 text-center">
+            <tbody class="border-t border-gray-300">
                 @if ($agendas->isEmpty())
                     <tr>
                         <td colspan="8" class="px-4 py-2 text-center">Tidak ada data agenda</td>
@@ -61,7 +61,7 @@
                             <td class="px-4 py-2">{{ $loop->iteration }}</td>
                             <td class="px-4 py-2">{{ $agenda->title }}</td>
                             <td class="px-4 py-2 text-nowrap">{{ $agenda->created_by }}</td>
-                            <td class="px-4 py-2 text-center">
+                            <td class="px-4 py-2">
                                 <div class="flex justify-center">
                                     @if ($agenda->end_dt_a > $agenda->end_dt_r)
                                         <span class="inline-block w-6 h-6 rounded-full bg-red-500"></span>

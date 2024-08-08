@@ -38,6 +38,28 @@
                 </div>
             </div>
         </div>
+        <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="text-2xl font-bold pb-4" id="total-on-time">{{ $totalOnTime }}</div>
+                    <div class="text-lg">Tepat Waktu</div>
+                </div>
+                <div>
+                    <img src="{{ asset('assets/icon/clock.svg') }}" class="w-12" alt="On Time Icon">
+                </div>
+            </div>
+        </div>
+        <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
+            <div class="flex justify-between items-center">
+                <div>
+                    <div class="text-2xl font-bold pb-4" id="total-late">{{ $totalLate }}</div>
+                    <div class="text-lg">Tidak Tepat Waktu</div>
+                </div>
+                <div>
+                    <img src="{{ asset('assets/icon/late.svg') }}" class="w-12" alt="Late Icon">
+                </div>
+            </div>
+        </div>
     </div>
     <div style="width: 100%; margin: auto;" class="pb-96">
         <canvas id="myChart" width="400" height="200" class=""></canvas>
@@ -48,46 +70,45 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-    const yearFilter = document.getElementById('yearFilter');
-    const ctx = document.getElementById('myChart').getContext('2d');
+            const yearFilter = document.getElementById('yearFilter');
+            const ctx = document.getElementById('myChart').getContext('2d');
 
-    const chartData = @json($chartData);
+            const chartData = @json($chartData);
 
-    let myChart = new Chart(ctx, {
-        type: 'bar',
-        data: chartData[yearFilter.value],
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            scales: {
-                x: {
-                    beginAtZero: true
-                },
-                y: {
-                    beginAtZero: true
+            let myChart = new Chart(ctx, {
+                type: 'bar',
+                data: chartData[yearFilter.value],
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        x: {
+                            beginAtZero: true
+                        },
+                        y: {
+                            beginAtZero: true
+                        }
+                    },
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Laporan'
+                        }
+                    }
                 }
-            },
-            plugins: {
-                title: {
-                    display: true,
-                    text: 'Laporan'
+            });
+
+            yearFilter.addEventListener('change', function() {
+                const selectedYear = this.value;
+                const data = chartData[selectedYear];
+                if (data) {
+                    myChart.data.labels = data.labels;
+                    myChart.data.datasets = data.datasets;
+                    myChart.update();
+                } else {
+                    console.error(`No data found for year: ${selectedYear}`);
                 }
-            }
-        }
-    });
-
-    yearFilter.addEventListener('change', function() {
-        const selectedYear = this.value;
-        const data = chartData[selectedYear];
-        if (data) {
-            myChart.data.labels = data.labels;
-            myChart.data.datasets = data.datasets;
-            myChart.update();
-        } else {
-            console.error(`No data found for year: ${selectedYear}`);
-        }
-    });
-});
-
+            });
+        });
     </script>
 @endsection
