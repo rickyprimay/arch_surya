@@ -58,7 +58,7 @@
                 @else
                     @foreach ($agendas as $agenda)
                         <tr>
-                            <td class="px-4 py-2">{{ $loop->iteration }}</td>
+                            <td class="px-4 py-2">{{ $loop->iteration + ($agendas->currentPage() - 1) * $agendas->perPage() }}</td>
                             <td class="px-4 py-2">{{ $agenda->title }}</td>
                             <td class="px-4 py-2 text-nowrap">{{ $agenda->created_by }}</td>
                             <td class="px-4 py-2">
@@ -97,6 +97,10 @@
                 @endif
             </tbody>
         </table>
+        <!-- Pagination Links -->
+        <div class="p-4">
+            {{ $agendas->links() }}
+        </div>
         @foreach ($agendas as $agenda)
         <div id="info-modal-{{ $agenda->id }}" tabindex="-1" aria-hidden="true" class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-md max-h-full">

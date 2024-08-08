@@ -21,7 +21,7 @@ class TimelineController extends Controller
             $query->where('program_id', $request->program_id);
         }
 
-        $agendas = $query->get();
+        $agendas = $query->paginate(10);
         $cities = Cities::all();
         $programs = Programs::all();
 
