@@ -9,17 +9,19 @@
         <img src="{{ asset('assets/logo/logo-fri.png') }}" class="w-[400px]">
     </div>
     <div class="mb-4">
-        <select id="yearFilter" class="p-2 border rounded">
-            @foreach($years as $year)
-                <option value="{{ $year }}">{{ $year }}</option>
-            @endforeach
-        </select>        
+        <form method="GET" action="{{ route('dashboard') }}">
+            <select name="year" class="p-2 border rounded" onchange="this.form.submit()">
+                @foreach($years as $year)
+                    <option value="{{ $year }}" {{ request('year') == $year ? 'selected' : '' }}>{{ $year }}</option>
+                @endforeach
+            </select>        
+        </form>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
         <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
             <div class="flex justify-between items-center">
                 <div>
-                    <div class="text-2xl font-bold pb-4" id="total-completed">{{ $totalActual }}</div>
+                    <div class="text-2xl font-bold pb-4">{{ $totalActual }}</div>
                     <div class="text-lg">Telah Selesai</div>
                 </div>
                 <div>
@@ -30,7 +32,7 @@
         <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
             <div class="flex justify-between items-center">
                 <div>
-                    <div class="text-2xl font-bold pb-4" id="total-in-progress">{{ $totalPlan }}</div>
+                    <div class="text-2xl font-bold pb-4">{{ $totalPlan }}</div>
                     <div class="text-lg">Dalam Proses</div>
                 </div>
                 <div>
@@ -41,7 +43,7 @@
         <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
             <div class="flex justify-between items-center">
                 <div>
-                    <div class="text-2xl font-bold pb-4" id="total-on-time">{{ $totalOnTime }}</div>
+                    <div class="text-2xl font-bold pb-4">{{ $totalOnTime }}</div>
                     <div class="text-lg">Tepat Waktu</div>
                 </div>
                 <div>
@@ -52,7 +54,7 @@
         <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
             <div class="flex justify-between items-center">
                 <div>
-                    <div class="text-2xl font-bold pb-4" id="total-late">{{ $totalLate }}</div>
+                    <div class="text-2xl font-bold pb-4">{{ $totalLate }}</div>
                     <div class="text-lg">Tidak Tepat Waktu</div>
                 </div>
                 <div>
@@ -62,7 +64,7 @@
         </div>
     </div>
     <div style="width: 100%; margin: auto;" class="pb-96">
-        <canvas id="myChart" width="400" height="200" class=""></canvas>
+        <canvas id="myChart" width="400" height="200"></canvas>
     </div>
 @endsection
 
@@ -70,14 +72,12 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const yearFilter = document.getElementById('yearFilter');
             const ctx = document.getElementById('myChart').getContext('2d');
-
             const chartData = @json($chartData);
 
             let myChart = new Chart(ctx, {
                 type: 'bar',
-                data: chartData[yearFilter.value],
+                data: chartData,
                 options: {
                     responsive: true,
                     maintainAspectRatio: false,
@@ -95,18 +95,6 @@
                             text: 'Laporan'
                         }
                     }
-                }
-            });
-
-            yearFilter.addEventListener('change', function() {
-                const selectedYear = this.value;
-                const data = chartData[selectedYear];
-                if (data) {
-                    myChart.data.labels = data.labels;
-                    myChart.data.datasets = data.datasets;
-                    myChart.update();
-                } else {
-                    console.error(`No data found for year: ${selectedYear}`);
                 }
             });
         });

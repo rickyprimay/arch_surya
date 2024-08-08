@@ -69,7 +69,7 @@
             Tambah Agenda
         </button>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4 border border-black">
+        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4 border border-black overflow-y-auto">
             <table class="w-full text-sm text-left text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
                     <tr>
@@ -173,7 +173,7 @@
         </div>
 
         <!-- Log History Section -->
-<div class="mt-4 p-4 bg-white border border-gray-300 rounded-lg shadow-md max-h-64 overflow-y-auto">
+<div class="mt-4 p-4 bg-white border border-gray-300 rounded-lg shadow-md max-h-48 overflow-y-auto">
     <h2 class="text-lg font-semibold text-gray-900 mb-2">Log History</h2>
     <ul class="space-y-2">
         @foreach ($logAgendas as $logAgenda)
