@@ -69,7 +69,7 @@
             Tambah Agenda
         </button>
 
-        <div class="relative overflow-x-auto shadow-md sm:rounded-lg mt-4 border border-black overflow-y-auto">
+        <div class="relative max-h-96 overflow-x-auto shadow-md sm:rounded-lg mt-4 border border-black overflow-y-auto">
             <table class="w-full text-sm text-left text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
                     <tr>
@@ -107,9 +107,9 @@
                     @else
                         @foreach ($agendas as $agenda)
                             <tr>
-                                <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky left-0 bg-white z-10">
+                                <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky left-0 bg-white ">
                                     {{ $loop->iteration }}</td>
-                                <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky left-12 bg-white z-10">
+                                <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky left-12 bg-white ">
                                     {{ $agenda->title }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->created_by }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->city->name }}</td>
