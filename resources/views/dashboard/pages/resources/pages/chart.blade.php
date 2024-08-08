@@ -173,31 +173,32 @@
         </div>
 
         <!-- Log History Section -->
-        <div class="mt-4 p-4 bg-white border border-gray-300 rounded-lg shadow-md">
-            <h2 class="text-lg font-semibold text-gray-900 mb-2">Log History</h2>
-            <ul class="space-y-2">
-                @foreach ($logAgendas as $logAgenda)
-                    <li class="text-sm text-gray-700">
-                        <span class="font-semibold">{{ $loop->iteration }}.)</span>
-                        <span class="font-semibold">{{ $logAgenda->name }}</span>
-                        @if ($logAgenda->status == 0)
-                            menambahkan Rencana pada Agenda
-                        @elseif($logAgenda->status == 1)
-                            menambahkan Aktual pada Agenda
-                        @elseif($logAgenda->status == 2)
-                            mengedit data pada Agenda
-                        @elseif($logAgenda->status == 3)
-                            menghapus data pada Agenda
-                        @else
-                            Lain nya
-                        @endif
-                        <span class="font-semibold">{{ $logAgenda->title }}</span> pada tanggal
-                        <span class="font-semibold">{{ $logAgenda->created_at }}</span>
-                        <hr>
-                    </li>
-                @endforeach
-            </ul>
-        </div>
+<div class="mt-4 p-4 bg-white border border-gray-300 rounded-lg shadow-md max-h-64 overflow-y-auto">
+    <h2 class="text-lg font-semibold text-gray-900 mb-2">Log History</h2>
+    <ul class="space-y-2">
+        @foreach ($logAgendas as $logAgenda)
+            <li class="text-sm text-gray-700">
+                <span class="font-semibold">{{ $loop->iteration }}.)</span>
+                <span class="font-semibold">{{ $logAgenda->name }}</span>
+                @if ($logAgenda->status == 0)
+                    menambahkan Rencana pada Agenda
+                @elseif($logAgenda->status == 1)
+                    menambahkan Aktual pada Agenda
+                @elseif($logAgenda->status == 2)
+                    mengedit data pada Agenda
+                @elseif($logAgenda->status == 3)
+                    menghapus data pada Agenda
+                @else
+                    Lain nya
+                @endif
+                <span class="font-semibold">{{ $logAgenda->title }}</span> pada tanggal
+                <span class="font-semibold">{{ $logAgenda->created_at }}</span>
+                <hr>
+            </li>
+        @endforeach
+    </ul>
+</div>
+
         <!-- Modal Adding Actual Agenda -->
         @foreach ($agendas as $agenda)
             <div id="adding-actual-modal-{{ $agenda->id }}" tabindex="-1" aria-hidden="true"
