@@ -69,7 +69,7 @@
             Tambah Agenda
         </button>
 
-        <div class="relative max-h-96 overflow-x-auto shadow-md sm:rounded-lg mt-4 border border-black overflow-y-auto">
+        <div class="relative max-h-[420px] overflow-x-auto shadow-md sm:rounded-lg mt-4 border border-black overflow-y-auto">
             <table class="w-full text-sm text-left text-gray-500">
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
                     <tr>
