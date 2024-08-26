@@ -7,6 +7,23 @@
             <h1 class="font-bold text-2xl">Dokumen  </h1>
             <p class="text-gray-400">Surya Arch / Sumber Daya / Dokumen</p>
         </div>
+        <div class="flex justify-end space-x-4 mb-4">
+            <form id="filterForm" action="{{ route('dashboard.chart') }}" method="GET" class="flex space-x-4">
+                
+                <div>
+                    <label for="month" class="block mb-2 text-sm font-medium text-gray-900">Urusan</label>
+                    <select id="month" name="month"
+                        class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
+                        <option value="">Pilih Urusan</option>
+                        
+                    </select>
+                </div>
+                <div class="flex items-end">
+                    <button type="submit"
+                        class="px-4 py-2 text-sm font-medium text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300">Filter</button>
+                </div>
+            </form>
+        </div>
         @if(Auth::user()->role == 0 || Auth::user()->role == 1 || Auth::user()->role == 4)
         <!-- Add Document Button -->
         <button data-modal-target="create-modal" data-modal-toggle="create-modal"
