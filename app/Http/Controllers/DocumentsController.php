@@ -11,10 +11,21 @@ use Illuminate\Support\Facades\Validator;
 
 class DocumentsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $documents = Document::with('division')->get();
+        $query = Document::with('division');
+
+        if ($request->has('division_id') && $request->division_id) {
+            $query->where('division_id', $request->division_id);
+        }
+
+        if ($request->has('search') && $request->search) {
+            $query->where('title', 'like', '%' . $request->search . '%');
+        }
+
+        $documents = $query->get();
         $divisions = Division::all();
+
         return view('dashboard.pages.resources.pages.documents', compact('documents', 'divisions'));
     }
 
