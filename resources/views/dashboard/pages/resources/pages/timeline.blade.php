@@ -144,13 +144,15 @@
 <script>
     document.getElementById('program_id').addEventListener('change', function() {
     var selectedProgramId = this.value;
+    var citySelect = document.getElementById('city_id');
+
     if (selectedProgramId) {
         fetch(`/get-cities-by-program/${selectedProgramId}`)
             .then(response => response.json())
             .then(data => {
-                var citySelect = document.getElementById('city_id');
-                citySelect.innerHTML = '<option value="">Semua Kota</option>';
+                citySelect.innerHTML = '<option value="">Semua Kota</option>'; // Reset with default option
 
+                // Jika data adalah array, gunakan forEach
                 if (Array.isArray(data)) {
                     data.forEach(function(city) {
                         var option = document.createElement('option');
@@ -159,6 +161,7 @@
                         citySelect.add(option);
                     });
                 } else {
+                    // Jika data bukan array, anggap itu objek tunggal
                     var option = document.createElement('option');
                     option.value = data.id;
                     option.text = data.name;
@@ -167,9 +170,22 @@
             })
             .catch(error => console.error('Error:', error));
     } else {
-        var citySelect = document.getElementById('city_id');
-        citySelect.innerHTML = '<option value="">Semua Kota</option>';
+        // Saat "Semua Program" dipilih, reset opsi kota dengan data awal dari server
+        fetch('/get-all-cities') // Ganti URL ini sesuai dengan route atau endpoint Anda untuk mengambil semua kota
+            .then(response => response.json())
+            .then(data => {
+                citySelect.innerHTML = '<option value="">Semua Kota</option>'; // Reset with default option
+
+                data.forEach(function(city) {
+                    var option = document.createElement('option');
+                    option.value = city.id;
+                    option.text = city.name;
+                    citySelect.add(option);
+                });
+            })
+            .catch(error => console.error('Error:', error));
     }
 });
+
 </script>
 @endsection

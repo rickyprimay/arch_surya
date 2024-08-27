@@ -52,4 +52,9 @@ class TimelineController extends Controller
 
         return response()->json($city);
     }
+    public function getAllCities()
+    {
+        $cities = Cities::all(); // Ambil semua kota dari model City
+        return response()->json($cities);
+    }
 }

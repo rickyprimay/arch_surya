@@ -43,4 +43,5 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/get-programs-by-year/{year}', [ChartController::class, 'getProgramsByYear']);
     Route::get('/get-cities-by-program/{program}', [TimelineController::class, 'getCitiesByProgram']);
+    Route::get('/get-all-cities', [TimelineController::class, 'getAllCities']);
 });
