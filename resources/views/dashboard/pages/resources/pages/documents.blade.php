@@ -79,7 +79,7 @@
                                     class="focus:outline-none text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2">Edit</button>
                                 <button type="button"
                                     class="focus:outline-none text-white bg-red-700 hover:bg-red-800 focus:ring-4 focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2"
-                                    data-modal-toggle="popup-modal" data-document-id="{{ $document->id }}">Delete</button>
+                                    data-modal-target="delete-modal-{{ $document->id }}" data-modal-toggle="delete-modal-{{ $document->id }}" data-document-id="{{ $document->id }}">Delete</button>
                             </td>
                             @endif
                         </tr>
@@ -92,7 +92,6 @@
             </table>
         </div>
 
-        <!-- Modal for Adding Document -->
         <div id="create-modal" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-md max-h-full">
@@ -152,8 +151,9 @@
             </div>
         </div>
 
+        @foreach ($documents as $document)
         <!-- Delete Confirmation Modal -->
-        <div id="popup-modal" tabindex="-1" aria-hidden="true"
+        <div id="delete-modal-{{ $document->id }}" tabindex="-1" aria-hidden="true"
             class="fixed top-0 right-0 left-0 z-50 w-full h-full p-4 overflow-x-hidden overflow-y-auto hidden">
             <div class="relative w-full max-w-md max-h-full">
                 <div class="relative bg-white rounded-lg shadow">
@@ -161,7 +161,7 @@
                         <h3 class="text-lg font-semibold text-gray-900">Hapus Dokumen</h3>
                         <button type="button"
                             class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                            data-modal-toggle="popup-modal">
+                            data-modal-toggle="delete-modal-{{ $document->id }}">
                             <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                                 viewBox="0 0 14 14">
                                 <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
@@ -174,7 +174,7 @@
                         <p class="text-base leading-relaxed text-gray-500">Apakah Anda yakin ingin menghapus dokumen ini?
                         </p>
                     </div>
-                    <form id="deleteForm" action="#" method="POST">
+                    <form id="deleteForm" action="{{ route('dashboard.document.destroy', ['document' => $document->id]) }}" method="POST">
                         @csrf
                         @method('DELETE')
                         <div class="flex gap-4 items-center p-6 space-x-2 border-t border-gray-200 rounded-b">
@@ -182,7 +182,7 @@
                                 class="text-white bg-red-600 hover:bg-red-700 focus:ring-4 focus:outline-none focus:ring-red-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Hapus</button>
                             <button type="button"
                                 class="text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm px-5 py-2.5 text-center"
-                                data-modal-toggle="popup-modal">Batal</button>
+                                data-modal-toggle="delete-modal-{{ $document->id }}">Batal</button>
                         </div>
                     </form>
                 </div>
@@ -190,7 +190,7 @@
         </div>
 
         <!-- Modals for Editing Documents (Add Edit Form similarly to Create Form) -->
-        @foreach ($documents as $document)
+        
         <div id="edit-modal-{{ $document->id }}" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
             <div class="relative p-4 w-full max-w-md max-h-full">
