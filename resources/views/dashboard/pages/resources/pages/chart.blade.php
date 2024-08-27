@@ -77,6 +77,7 @@
                         <th rowspan="2" class="px-4 py-2 border sticky left-12 bg-gray-50 border-gray-300 z-10">Agenda
                         </th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Dibuat oleh</th>
+                        <th rowspan="2" class="px-4 py-2 border border-gray-300">Dokumen</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Kota</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Durasi (Hari)</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">R/A</th>
@@ -112,6 +113,7 @@
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky left-12 bg-white ">
                                     {{ $agenda->title }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->created_by }}</td>
+                                <td rowspan="2" class="border border-gray-300 px-4 py-2">@if($agenda->document != null) <a target="__blank" class="text-blue-400 hover:text-black" href="{{ asset('storage/' . $agenda->document) }}">Lihat Dokumen</a>@else Tidak ada Dokumen @endif</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->city->name }}</td>
                                 <td class="border border-gray-300 px-4 py-2">{{ $agenda->duration_r }}</td>
                                 <td class="border border-gray-300 px-4 py-2">R</td>
@@ -387,18 +389,6 @@
                         </div>
                         @endif
                         <div class="col-span-2">
-                            <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900">Kota</label>
-                            <select name="city_id" id="city_id"
-                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                required>
-                                <option value="">Pilih Kota</option>
-                                @foreach ($cities as $city)
-                                <option value="{{ $city->id }}" {{ $agenda->city_id == $city->id ? 'selected' : '' }}>
-                                    {{ $city->name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-span-2">
                             <label for="program_id" class="block mb-2 text-sm font-medium text-gray-900">Program</label>
                             <select name="program_id" id="program_id"
                                 class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
@@ -462,7 +452,7 @@
                         </button>
                     </div>
                     <!-- Modal body -->
-                    <form class="p-4 md:p-5" method="POST" action="{{ route('dashboard.chart.store') }}">
+                    <form class="p-4 md:p-5" method="POST" action="{{ route('dashboard.chart.store') }}" enctype="multipart/form-data">
                         @csrf
                         <div class="grid gap-4 mb-4 grid-cols-2">
                             <div class="col-span-2">
@@ -509,18 +499,6 @@
                             </div>
 
                             <div class="col-span-2">
-                                <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900">Kota</label>
-                                <select name="city_id" id="city_id"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                    required>
-                                    <option value="">Pilih Kota</option>
-                                    @foreach ($cities as $city)
-                                        <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-
-                            <div class="col-span-2">
                                 <label for="program_id"
                                     class="block mb-2 text-sm font-medium text-gray-900">Program</label>
                                 <select name="program_id" id="program_id"
@@ -531,6 +509,12 @@
                                         <option value="{{ $program->id }}">{{ $program->name }}</option>
                                     @endforeach
                                 </select>
+                            </div>
+                            <div class="col-span-2">
+                                <label for="file" class="block mb-2 text-sm font-medium text-gray-900">Dokumen (Opsional)</label>
+                                <input type="file" name="file" id="file"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                                    required>
                             </div>
                         </div>
 

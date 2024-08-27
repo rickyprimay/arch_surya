@@ -141,7 +141,7 @@
                         </div>
                         <div class="flex gap-4 items-center">
                             <button type="submit"
-                                class="text-white bg-primary-600 hover:bg-primary-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Tambah
+                                class="text-white bg-green-600 hover:bg-green-700 focus:ring-4 focus:outline-none focus:ring-primary-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">Tambah
                                 Dokumen</button>
                             <button type="button"
                                 class="text-gray-500 bg-white border border-gray-300 hover:bg-gray-100 focus:ring-4 focus:outline-none focus:ring-gray-200 rounded-lg text-sm px-5 py-2.5 text-center"
@@ -263,7 +263,6 @@
             });
         });
         
-        // JavaScript to handle closing modals
         document.querySelectorAll('[data-modal-toggle]').forEach(button => {
             button.addEventListener('click', () => {
                 const modalId = button.getAttribute('data-modal-toggle');

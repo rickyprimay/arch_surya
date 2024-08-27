@@ -22,7 +22,8 @@ class Agendas extends Model
         'program_id',
         'updated_date',
         'updated_actual',
-        'information'
+        'information',
+        'document'
     ];
 
     public function city()

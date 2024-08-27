@@ -13,68 +13,68 @@ use Carbon\Carbon;
 class ChartController extends Controller
 {
     public function index(Request $request)
-{
-    $query = Agendas::query();
-
-    if ($request->filled('city_id')) {
-        $query->where('city_id', $request->city_id);
+    {
+        $query = Agendas::query();
+    
+        if ($request->filled('city_id')) {
+            $query->where('city_id', $request->city_id);
+        }
+    
+        if ($request->filled('program_id')) {
+            $query->where('program_id', $request->program_id);
+        }
+    
+        $latestAgenda = Agendas::orderBy('start_dt_r', 'desc')->first();
+        $latestYear = $latestAgenda ? date('Y', strtotime($latestAgenda->start_dt_r)) : date('Y');
+        $latestMonth = $latestAgenda ? date('m', strtotime($latestAgenda->start_dt_r)) : date('m');
+    
+        $selectedYear = $request->input('year', $latestYear);
+        $selectedMonth = $request->input('month', $latestMonth);
+    
+        $query->where(function ($query) use ($selectedYear, $selectedMonth) {
+            $query->whereYear('start_dt_r', $selectedYear)
+                  ->whereMonth('start_dt_r', $selectedMonth)
+                  ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+                      $query->whereYear('end_dt_r', $selectedYear)
+                            ->whereMonth('end_dt_r', $selectedMonth);
+                  })
+                  ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+                      $query->whereYear('start_dt_r', $selectedYear)
+                            ->whereMonth('start_dt_r', '<', $selectedMonth)
+                            ->whereYear('end_dt_r', $selectedYear)
+                            ->whereMonth('end_dt_r', '>', $selectedMonth);
+                  });
+        });
+    
+        $agendas = $query->get();
+        $cities = Cities::all();
+        $programs = Programs::all();
+    
+        $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
+                        ->distinct()
+                        ->orderBy('year', 'desc')
+                        ->pluck('year');
+    
+        $months = range(1, 12);
+    
+        $logAgendas = LogAgenda::all();
+    
+        $daysInMonth = Carbon::createFromDate($selectedYear, $selectedMonth)->daysInMonth;
+    
+        return view('dashboard.pages.resources.pages.chart', compact('logAgendas', 'agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth', 'daysInMonth'));
     }
-
-    if ($request->filled('program_id')) {
-        $query->where('program_id', $request->program_id);
-    }
-
-    $latestAgenda = Agendas::orderBy('start_dt_r', 'desc')->first();
-    $latestYear = $latestAgenda ? date('Y', strtotime($latestAgenda->start_dt_r)) : date('Y');
-    $latestMonth = $latestAgenda ? date('m', strtotime($latestAgenda->start_dt_r)) : date('m');
-
-    $selectedYear = $request->input('year', $latestYear);
-    $selectedMonth = $request->input('month', $latestMonth);
-
-    $query->where(function ($query) use ($selectedYear, $selectedMonth) {
-        $query->whereYear('start_dt_r', $selectedYear)
-              ->whereMonth('start_dt_r', $selectedMonth)
-              ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
-                  $query->whereYear('end_dt_r', $selectedYear)
-                        ->whereMonth('end_dt_r', $selectedMonth);
-              })
-              ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
-                  $query->whereYear('start_dt_r', $selectedYear)
-                        ->whereMonth('start_dt_r', '<', $selectedMonth)
-                        ->whereYear('end_dt_r', $selectedYear)
-                        ->whereMonth('end_dt_r', '>', $selectedMonth);
-              });
-    });
-
-    $agendas = $query->get();
-    $cities = Cities::all();
-    $programs = Programs::all();
-
-    $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
-                    ->distinct()
-                    ->orderBy('year', 'desc')
-                    ->pluck('year');
-
-    $months = range(1, 12);
-
-    $logAgendas = LogAgenda::all();
-
-    $daysInMonth = Carbon::createFromDate($selectedYear, $selectedMonth)->daysInMonth;
-
-    return view('dashboard.pages.resources.pages.chart', compact('logAgendas', 'agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth', 'daysInMonth'));
-}
-
-
-
+    
     public function store(Request $request)
     {
         $request->validate([
             'title' => 'required|string|max:255',
             'start_dt_r' => 'required|date_format:m/d/Y',
             'end_dt_r' => 'required|date_format:m/d/Y',
-            'city_id' => 'required|integer|exists:cities,id',
             'program_id' => 'required|integer|exists:programs,id',
+            'file' => 'nullable|file|mimes:pdf,doc,docx',
         ]);
+
+        $city_id = Programs::find($request->program_id)->city_id;
 
         $start_dt_r = Carbon::createFromFormat('m/d/Y', $request->start_dt_r)->format('Y-m-d');
         $end_dt_r = Carbon::createFromFormat('m/d/Y', $request->end_dt_r)->format('Y-m-d');
@@ -83,15 +83,21 @@ class ChartController extends Controller
         $end_date = Carbon::createFromFormat('Y-m-d', $end_dt_r);
         $duration_r = $start_date->diffInDays($end_date) + 1;
 
-        Agendas::create([
+        $agenda = Agendas::create([
             'title' => $request->title,
             'duration_r' => $duration_r,
             'created_by' => Auth::user()->name,
             'start_dt_r' => $start_dt_r,
             'end_dt_r' => $end_dt_r,
-            'city_id' => $request->city_id,
+            'city_id' => $city_id,
             'program_id' => $request->program_id,
         ]);
+
+        if ($request->hasFile('file')) {
+            $path = $request->file('file')->store('document', 'public');
+            $agenda->document = $path;
+            $agenda->save();
+        }
 
         LogAgenda::create([
             'name' => Auth::user()->name,
@@ -145,11 +151,12 @@ class ChartController extends Controller
             'title' => 'required|string|max:255',
             'start_dt_r' => 'required|date_format:m/d/Y',
             'end_dt_r' => 'required|date_format:m/d/Y',
-            'city_id' => 'required|integer|exists:cities,id',
             'program_id' => 'required|integer|exists:programs,id',
             'start_dt_a' => 'nullable|date_format:m/d/Y',
             'end_dt_a' => 'nullable|date_format:m/d/Y',
         ]);
+
+        $city_id = Programs::find($validated['program_id'])->city_id;
 
         $agenda = Agendas::findOrFail($id);
 
@@ -165,7 +172,7 @@ class ChartController extends Controller
             'start_dt_r' => $start_dt_r,
             'end_dt_r' => $end_dt_r,
             'duration_r' => $duration_r,
-            'city_id' => $validated['city_id'],
+            'city_id' => $city_id,
             'program_id' => $validated['program_id'],
         ]);
 
