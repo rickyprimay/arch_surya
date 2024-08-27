@@ -15,4 +15,8 @@ class Programs extends Model
     {
         return $this->belongsTo(Cities::class);
     }
+    public function agendas()
+    {
+        return $this->hasMany(Agendas::class, 'program_id');
+    }
 }

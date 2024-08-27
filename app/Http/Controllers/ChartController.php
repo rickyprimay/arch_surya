@@ -224,4 +224,15 @@ class ChartController extends Controller
 
         return redirect()->route('dashboard.chart');
     }
+
+    public function getProgramsByYear($year)
+    {
+        $programs = Programs::whereHas('agendas', function ($query) use ($year) {
+            $query->whereYear('start_dt_r', $year);
+        })->get();
+
+        return response()->json([
+            'programs' => $programs,
+        ]);
+    }
 }

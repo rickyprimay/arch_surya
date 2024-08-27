@@ -591,5 +591,23 @@
                 }
             });
         });
+        document.getElementById('year').addEventListener('change', function() {
+    var selectedYear = this.value;
+
+    fetch(`/get-programs-by-year/${selectedYear}`)
+        .then(response => response.json())
+        .then(data => {
+            var programSelect = document.getElementById('program_id');
+            programSelect.innerHTML = '<option value="">Semua Program</option>'; // Reset options
+
+            data.programs.forEach(function(program) {
+                var option = document.createElement('option');
+                option.value = program.id;
+                option.text = program.name;
+                programSelect.add(option);
+            });
+        })
+        .catch(error => console.error('Error:', error));
+});
     </script>
 @endsection

@@ -40,4 +40,6 @@ Route::middleware('auth')->group(function () {
     
     Route::get('/dashboard/resource/timeline', [TimelineController::class, 'index'])->name('dashboard.timeline');
     Route::put('/dashboard/resource/timeline/add-information/{id}', [TimelineController::class, 'addInformation'])->name('dashboard.addInformation');
+
+    Route::get('/get-programs-by-year/{year}', [ChartController::class, 'getProgramsByYear']);
 });
