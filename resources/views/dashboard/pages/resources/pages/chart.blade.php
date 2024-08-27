@@ -599,7 +599,7 @@
         .then(response => response.json())
         .then(data => {
             var programSelect = document.getElementById('program_id');
-            programSelect.innerHTML = '<option value="">Semua Program</option>'; // Reset options
+            programSelect.innerHTML = '<option value="">Semua Program</option>';
 
             data.programs.forEach(function(program) {
                 var option = document.createElement('option');

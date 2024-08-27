@@ -14,20 +14,20 @@
             <p class="text-sm text-left rtl:text-right text-black">Tepat Waktu</p>
         </div>
         <div>
-            <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900">Kota</label>
-            <select id="city_id" name="city_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
-                <option value="">Semua Kota</option>
-                @foreach($cities as $city)
-                    <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
-                @endforeach
-            </select>
-        </div>
-        <div>
             <label for="program_id" class="block mb-2 text-sm font-medium text-gray-900">Program</label>
             <select id="program_id" name="program_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
                 <option value="">Semua Program</option>
                 @foreach($programs as $program)
                     <option value="{{ $program->id }}" {{ request('program_id') == $program->id ? 'selected' : '' }}>{{ $program->name }}</option>
+                @endforeach
+            </select>
+        </div>
+        <div>
+            <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900">Kota</label>
+            <select id="city_id" name="city_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 p-2.5">
+                <option value="">Semua Kota</option>
+                @foreach($cities as $city)
+                    <option value="{{ $city->id }}" {{ request('city_id') == $city->id ? 'selected' : '' }}>{{ $city->name }}</option>
                 @endforeach
             </select>
         </div>
@@ -142,12 +142,34 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    function alertNotOwner() {
-        Swal.fire({
-            icon: 'error',
-            title: 'Akses Ditolak',
-            text: 'Ini bukan agenda kamu!',
-        });
+    document.getElementById('program_id').addEventListener('change', function() {
+    var selectedProgramId = this.value;
+    if (selectedProgramId) {
+        fetch(`/get-cities-by-program/${selectedProgramId}`)
+            .then(response => response.json())
+            .then(data => {
+                var citySelect = document.getElementById('city_id');
+                citySelect.innerHTML = '<option value="">Semua Kota</option>';
+
+                if (Array.isArray(data)) {
+                    data.forEach(function(city) {
+                        var option = document.createElement('option');
+                        option.value = city.id;
+                        option.text = city.name;
+                        citySelect.add(option);
+                    });
+                } else {
+                    var option = document.createElement('option');
+                    option.value = data.id;
+                    option.text = data.name;
+                    citySelect.add(option);
+                }
+            })
+            .catch(error => console.error('Error:', error));
+    } else {
+        var citySelect = document.getElementById('city_id');
+        citySelect.innerHTML = '<option value="">Semua Kota</option>';
     }
+});
 </script>
 @endsection

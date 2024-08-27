@@ -38,4 +38,18 @@ class TimelineController extends Controller
 
         return redirect()->route('dashboard.timeline');
     }
+    public function getCitiesByProgram($programId)
+    {
+        $program = Programs::find($programId);
+
+        if (!$program) {
+            return response()->json(['error' => 'Program not found'], 404);
+        }
+
+        $cityId = $program->city_id;
+
+        $city = Cities::find($cityId);
+
+        return response()->json($city);
+    }
 }
