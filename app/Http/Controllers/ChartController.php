@@ -1,4 +1,4 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
@@ -8,6 +8,7 @@ use App\Models\LogAgenda;
 use App\Models\Programs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
 
 class ChartController extends Controller
@@ -15,55 +16,49 @@ class ChartController extends Controller
     public function index(Request $request)
     {
         $query = Agendas::query();
-    
+
         if ($request->filled('city_id')) {
             $query->where('city_id', $request->city_id);
         }
-    
+
         if ($request->filled('program_id')) {
             $query->where('program_id', $request->program_id);
         }
-    
+
         $latestAgenda = Agendas::orderBy('start_dt_r', 'desc')->first();
         $latestYear = $latestAgenda ? date('Y', strtotime($latestAgenda->start_dt_r)) : date('Y');
         $latestMonth = $latestAgenda ? date('m', strtotime($latestAgenda->start_dt_r)) : date('m');
-    
+
         $selectedYear = $request->input('year', $latestYear);
         $selectedMonth = $request->input('month', $latestMonth);
-    
+
         $query->where(function ($query) use ($selectedYear, $selectedMonth) {
-            $query->whereYear('start_dt_r', $selectedYear)
-                  ->whereMonth('start_dt_r', $selectedMonth)
-                  ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
-                      $query->whereYear('end_dt_r', $selectedYear)
-                            ->whereMonth('end_dt_r', $selectedMonth);
-                  })
-                  ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
-                      $query->whereYear('start_dt_r', $selectedYear)
-                            ->whereMonth('start_dt_r', '<', $selectedMonth)
-                            ->whereYear('end_dt_r', $selectedYear)
-                            ->whereMonth('end_dt_r', '>', $selectedMonth);
-                  });
+            $query
+                ->whereYear('start_dt_r', $selectedYear)
+                ->whereMonth('start_dt_r', $selectedMonth)
+                ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+                    $query->whereYear('end_dt_r', $selectedYear)->whereMonth('end_dt_r', $selectedMonth);
+                })
+                ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+                    $query->whereYear('start_dt_r', $selectedYear)->whereMonth('start_dt_r', '<', $selectedMonth)->whereYear('end_dt_r', $selectedYear)->whereMonth('end_dt_r', '>', $selectedMonth);
+                });
         });
-    
+
         $agendas = $query->get();
         $cities = Cities::all();
         $programs = Programs::all();
-    
-        $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
-                        ->distinct()
-                        ->orderBy('year', 'desc')
-                        ->pluck('year');
-    
+
+        $years = Agendas::selectRaw('YEAR(start_dt_r) as year')->distinct()->orderBy('year', 'desc')->pluck('year');
+
         $months = range(1, 12);
-    
+
         $logAgendas = LogAgenda::all();
-    
+
         $daysInMonth = Carbon::createFromDate($selectedYear, $selectedMonth)->daysInMonth;
-    
+
         return view('dashboard.pages.resources.pages.chart', compact('logAgendas', 'agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth', 'daysInMonth'));
     }
-    
+
     public function store(Request $request)
     {
         $request->validate([
@@ -131,7 +126,7 @@ class ChartController extends Controller
             'start_dt_a' => $start_dt_a,
             'end_dt_a' => $end_dt_a,
             'duration_a' => $duration_a,
-            'updated_actual' => $updated_actual
+            'updated_actual' => $updated_actual,
         ]);
 
         LogAgenda::create([
@@ -154,6 +149,7 @@ class ChartController extends Controller
             'program_id' => 'required|integer|exists:programs,id',
             'start_dt_a' => 'nullable|date_format:m/d/Y',
             'end_dt_a' => 'nullable|date_format:m/d/Y',
+            'file' => 'nullable|file|mimes:pdf,doc,docx',
         ]);
 
         $city_id = Programs::find($validated['program_id'])->city_id;
@@ -176,6 +172,16 @@ class ChartController extends Controller
             'program_id' => $validated['program_id'],
         ]);
 
+        if ($request->hasFile('file')) {
+            if ($agenda->document) {
+                Storage::disk('public')->delete($agenda->document);
+            }
+
+            $path = $request->file('file')->store('document', 'public');
+            $agenda->document = $path;
+            $agenda->save();
+        }
+
         if ($request->filled('start_dt_a') && $request->filled('end_dt_a')) {
             $start_dt_a = Carbon::createFromFormat('m/d/Y', $validated['start_dt_a'])->format('Y-m-d');
             $end_dt_a = Carbon::createFromFormat('m/d/Y', $validated['end_dt_a'])->format('Y-m-d');
@@ -189,24 +195,19 @@ class ChartController extends Controller
                 'end_dt_a' => $end_dt_a,
                 'duration_a' => $duration_a,
             ]);
-
-            LogAgenda::create([
-                'name' => Auth::user()->name,
-                'status' => 2,
-                'title' => $agenda->title,
-            ]);
-        } else {
-            LogAgenda::create([
-                'name' => Auth::user()->name,
-                'status' => 2,
-                'title' => $agenda->title,
-            ]);
         }
+
+        LogAgenda::create([
+            'name' => Auth::user()->name,
+            'status' => 2,
+            'title' => $agenda->title,
+        ]);
 
         toastr()->success('Agenda Berhasil diperbarui');
 
         return redirect()->route('dashboard.chart');
     }
+
     public function destroy($id)
     {
         $agenda = Agendas::findOrFail($id);
@@ -215,7 +216,7 @@ class ChartController extends Controller
 
         LogAgenda::create([
             'name' => Auth::user()->name,
-            'status' => 3, // Status 3 untuk log penghapusan
+            'status' => 3,
             'title' => $agendaTitle,
         ]);
 

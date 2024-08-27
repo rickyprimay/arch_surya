@@ -306,7 +306,7 @@
                     </button>
                 </div>
                 <!-- Modal body -->
-                <form class="p-4 md:p-5" method="POST" action="{{ route('dashboard.chart.update', $agenda->id) }}">
+                <form class="p-4 md:p-5" method="POST" action="{{ route('dashboard.chart.update', $agenda->id) }}" enctype="multipart/form-data">
                     @csrf
                     @method('PUT')
                     <div class="grid gap-4 mb-4 grid-cols-2">
@@ -399,6 +399,11 @@
                                     {{ $program->name }}</option>
                                 @endforeach
                             </select>
+                        </div>
+                        <div class="col-span-2">
+                            <label for="file" class="block mb-2 text-sm font-medium text-gray-900">Dokumen (opsional)</label>
+                            <input type="file" name="file" id="file"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
                         </div>
                     </div>
                     <div class="flex justify-between">
