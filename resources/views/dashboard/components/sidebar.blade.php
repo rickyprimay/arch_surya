@@ -35,7 +35,7 @@
                 <ul id="dropdown-menu" class="space-y-2 ms-8 {{ $isDropdownActive ? '' : 'hidden' }}">
                     <li>
                         <a href="{{ route('dashboard.document') }}" class="flex items-center p-2 text-gray-900 rounded-lg {{ Route::is('dashboard.document*') ? 'bg-gray-100' : 'hover:bg-gray-100 group' }}">
-                            <span>Dokumen</span>
+                            <span>Daftar Informasi Program</span>
                         </a>
                     </li>
                     @if (Auth::user()->role == 0 || Auth::user()->role == 1 || Auth::user()->role == 4)
