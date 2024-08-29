@@ -131,14 +131,23 @@
                     <div class="grid gap-4 mb-4 grid-cols-2">
                         <div class="col-span-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 ">Nama Program</label>
-                            <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Nama Program" required>
+                            <input type="text" name="name" id="name" value="{{ $program->name }}" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Nama Program" required>
+                        </div>
+                        <div class="col-span-2 mt-2">
+                            <label for="division_id" class="block mb-2 text-sm font-medium text-gray-900 ">Urusan</label>
+                            <select name="division_id" id="division_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required>
+                                <option value="">Pilih Urusan</option>
+                                @foreach ($division as $divis)
+                                    <option value="{{ $divis->id }}" @if($program->division_id == $divis->id) selected @endif>{{ $divis->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-span-2 mt-2">
                             <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900 ">Kota</label>
                             <select name="city_id" id="city_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required>
                                 <option value="">Pilih Kota</option>
                                 @foreach ($cities as $city)
-                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                    <option value="{{ $city->id }}" @if($program->city_id == $city->id) selected @endif>{{ $city->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -150,7 +159,8 @@
                 </form>
             </div>
         </div>
-    </div> 
+    </div>
+
         <!-- Modal for Deleting Document -->
         <div id="delete-modal-{{ $program->id }}" tabindex="-1" aria-hidden="true"
             class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
