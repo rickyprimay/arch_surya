@@ -10,9 +10,22 @@ use Illuminate\Support\Facades\Auth;
 
 class ProgramsController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
-        $programs = Programs::with('city', 'division')->get();
+        $division_id = $request->input('division_id');
+        $city_id = $request->input('city_id');
+
+        $query = Programs::query();
+
+        if ($division_id) {
+            $query->where('division_id', $division_id);
+        }
+
+        if ($city_id) {
+            $query->where('city_id', $city_id);
+        }
+
+        $programs = $query->with('city', 'division')->get();
         $cities = Cities::all();
         $division = Division::all();
 
