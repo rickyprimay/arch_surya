@@ -9,11 +9,15 @@ class Programs extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'created_by', 'city_id'];
+    protected $fillable = ['name', 'created_by', 'city_id', 'division_id'];
     
     public function city()
     {
         return $this->belongsTo(Cities::class);
+    }
+    public function division()
+    {
+        return $this->belongsTo(Division::class);
     }
     public function agendas()
     {

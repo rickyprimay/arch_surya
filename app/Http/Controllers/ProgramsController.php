@@ -1,8 +1,9 @@
-<?php
+<?php 
 
 namespace App\Http\Controllers;
 
 use App\Models\Cities;
+use App\Models\Division;
 use App\Models\Programs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -11,21 +12,24 @@ class ProgramsController extends Controller
 {
     public function index()
     {
-        $programs = Programs::with('city')->get();
+        $programs = Programs::with('city', 'division')->get();
         $cities = Cities::all();
+        $division = Division::all();
 
-        return view('dashboard.pages.resources.pages.programs', compact('programs', 'cities'));
+        return view('dashboard.pages.resources.pages.programs', compact('programs', 'cities', 'division'));
     }
 
     public function store(Request $request)
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'division_id' => 'required|integer|exists:divisions,id',
             'city_id' => 'required|integer|exists:cities,id',
         ]);
 
         Programs::create([
             'name' => $request->name,
+            'division_id' => $request->division_id,
             'city_id' => $request->city_id,
             'created_by' => Auth::user()->name,
         ]);
@@ -38,12 +42,14 @@ class ProgramsController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
+            'division_id' => 'required|integer|exists:divisions,id',
             'city_id' => 'required|integer|exists:cities,id',
         ]);
 
         $program = Programs::findOrFail($id);
         $program->update([
             'name' => $request->name,
+            'division_id' => $request->division_id,
             'city_id' => $request->city_id,
         ]);
 

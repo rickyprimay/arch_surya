@@ -20,6 +20,7 @@
                     <th rowspan="2" class="px-4 py-2 ">No</th>
                     <th rowspan="2" class="px-4 py-2 ">Nama Program</th>
                     <th rowspan="2" class="px-4 py-2 ">Dibuat oleh</th>
+                    <th rowspan="2" class="px-4 py-2 ">Urusan</th>
                     <th rowspan="2" class="px-4 py-2 ">Kota</th>
                     <th rowspan="2" class="px-4 py-2 ">Aksi</th>
                 </tr>
@@ -35,6 +36,7 @@
                             <td class=" px-4 py-2">{{ $loop->iteration }}</td>
                             <td class=" px-4 py-2">{{ $program->name }}</td>
                             <td class=" px-4 py-2">{{ $program->created_by }}</td>
+                            <td class=" px-4 py-2">{{ $program->division->name }}</td>
                             <td class=" px-4 py-2">{{ $program->city->name }}</td>
                             <td class="px-6 py-4">
                                 <button data-modal-target="edit-modal-{{ $program->id }}"
@@ -75,6 +77,15 @@
                         <div class="col-span-2">
                             <label for="name" class="block mb-2 text-sm font-medium text-gray-900 ">Nama Program</label>
                             <input type="text" name="name" id="name" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 " placeholder="Nama Program" required>
+                        </div>
+                        <div class="col-span-2 mt-2">
+                            <label for="division_id" class="block mb-2 text-sm font-medium text-gray-900 ">Urusan</label>
+                            <select name="division_id" id="division_id" class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5" required>
+                                <option value="">Pilih Urusan</option>
+                                @foreach ($division as $divis)
+                                    <option value="{{ $divis->id }}">{{ $divis->name }}</option>
+                                @endforeach
+                            </select>
                         </div>
                         <div class="col-span-2 mt-2">
                             <label for="city_id" class="block mb-2 text-sm font-medium text-gray-900 ">Kota</label>
