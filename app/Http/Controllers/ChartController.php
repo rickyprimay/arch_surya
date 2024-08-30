@@ -14,50 +14,51 @@ use Carbon\Carbon;
 class ChartController extends Controller
 {
     public function index(Request $request)
-    {
-        $query = Agendas::query();
+{
+    $query = Agendas::query();
 
-        if ($request->filled('city_id')) {
-            $query->where('city_id', $request->city_id);
-        }
-
-        if ($request->filled('program_id')) {
-            $query->where('program_id', $request->program_id);
-        }
-
-        $latestAgenda = Agendas::orderBy('start_dt_r', 'desc')->first();
-        $latestYear = $latestAgenda ? date('Y', strtotime($latestAgenda->start_dt_r)) : date('Y');
-        $latestMonth = $latestAgenda ? date('m', strtotime($latestAgenda->start_dt_r)) : date('m');
-
-        $selectedYear = $request->input('year', $latestYear);
-        $selectedMonth = $request->input('month', $latestMonth);
-
-        $query->where(function ($query) use ($selectedYear, $selectedMonth) {
-            $query
-                ->whereYear('start_dt_r', $selectedYear)
-                ->whereMonth('start_dt_r', $selectedMonth)
-                ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
-                    $query->whereYear('end_dt_r', $selectedYear)->whereMonth('end_dt_r', $selectedMonth);
-                })
-                ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
-                    $query->whereYear('start_dt_r', $selectedYear)->whereMonth('start_dt_r', '<', $selectedMonth)->whereYear('end_dt_r', $selectedYear)->whereMonth('end_dt_r', '>', $selectedMonth);
-                });
-        });
-
-        $agendas = $query->get();
-        $cities = Cities::all();
-        $programs = Programs::all();
-
-        $years = Agendas::selectRaw('YEAR(start_dt_r) as year')->distinct()->orderBy('year', 'desc')->pluck('year');
-
-        $months = range(1, 12);
-
-        $logAgendas = LogAgenda::all();
-
-        $daysInMonth = Carbon::createFromDate($selectedYear, $selectedMonth)->daysInMonth;
-
-        return view('dashboard.pages.resources.pages.chart', compact('logAgendas', 'agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth', 'daysInMonth'));
+    if ($request->filled('city_id')) {
+        $query->where('city_id', $request->city_id);
     }
+
+    if ($request->filled('program_id')) {
+        $query->where('program_id', $request->program_id);
+    }
+
+    $latestAgenda = Agendas::orderBy('start_dt_r', 'desc')->first();
+    $latestYear = $latestAgenda ? date('Y', strtotime($latestAgenda->start_dt_r)) : date('Y');
+    $latestMonth = $latestAgenda ? date('m', strtotime($latestAgenda->start_dt_r)) : date('m');
+
+    $selectedYear = $request->input('year', $latestYear);
+    $selectedMonth = $request->input('month', $latestMonth);
+
+    $query->where(function ($query) use ($selectedYear, $selectedMonth) {
+        $query
+            ->whereYear('start_dt_r', $selectedYear)
+            ->whereMonth('start_dt_r', $selectedMonth)
+            ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+                $query->whereYear('end_dt_r', $selectedYear)->whereMonth('end_dt_r', $selectedMonth);
+            })
+            ->orWhere(function ($query) use ($selectedYear, $selectedMonth) {
+                $query->whereYear('start_dt_r', $selectedYear)->whereMonth('start_dt_r', '<', $selectedMonth)->whereYear('end_dt_r', $selectedYear)->whereMonth('end_dt_r', '>', $selectedMonth);
+            });
+    });
+
+    // Load relasi program dan division agar tidak terjadi N+1 problem
+    $agendas = $query->with(['program.division'])->get();
+    $cities = Cities::all();
+    $programs = Programs::all();
+
+    $years = Agendas::selectRaw('YEAR(start_dt_r) as year')->distinct()->orderBy('year', 'desc')->pluck('year');
+
+    $months = range(1, 12);
+
+    $logAgendas = LogAgenda::all();
+
+    $daysInMonth = Carbon::createFromDate($selectedYear, $selectedMonth)->daysInMonth;
+
+    return view('dashboard.pages.resources.pages.chart', compact('logAgendas', 'agendas', 'cities', 'programs', 'years', 'months', 'selectedYear', 'selectedMonth', 'daysInMonth'));
+}
 
     public function store(Request $request)
     {

@@ -13,4 +13,8 @@ class Division extends Model
     {
         return $this->hasMany(Document::class);
     }
+    public function programs()
+    {
+        return $this->hasMany(Programs::class, 'division_id');
+    }
 }

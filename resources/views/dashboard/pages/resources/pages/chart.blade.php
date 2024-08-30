@@ -74,9 +74,9 @@
                 <thead class="text-xs text-gray-700 uppercase bg-gray-50 sticky top-0 z-10">
                     <tr>
                         <th rowspan="2" class="px-4 py-2 border sticky left-0 bg-gray-50 border-gray-300 z-10">No</th>
-                        <th rowspan="2" class="px-4 py-2 border sticky left-12 bg-gray-50 border-gray-300 z-10">Agenda
-                        </th>
+                        <th rowspan="2" class="px-4 py-2 border sticky left-12 bg-gray-50 border-gray-300 z-10">Agenda</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Dibuat oleh</th>
+                        <th rowspan="2" class="px-4 py-2 border border-gray-300">Urusan</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Dokumen</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Kota</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Aksi</th>
@@ -113,6 +113,7 @@
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky left-12 bg-white ">
                                     {{ $agenda->title }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->created_by }}</td>
+                                <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->program->division->name }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">@if($agenda->document != null) <a target="__blank" class="text-blue-400 hover:text-black" href="{{ asset('storage/' . $agenda->document) }}">Lihat Dokumen</a>@else Tidak ada Dokumen @endif</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->city->name }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 text-nowrap"><button data-modal-target="edit-modal-{{ $agenda->id }}"
