@@ -113,7 +113,11 @@
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky left-12 bg-white ">
                                     {{ $agenda->title }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->created_by }}</td>
-                                <td rowspan="2" class="border border-gray-300 px-4 py-2">@if( $agenda->program->division->name != null ) {{ $agenda->program->division->name }} @else Kosong @endif</td>
+                                <td rowspan="2" class="border border-gray-300 px-4 py-2">@if(optional($agenda->program->division)->name)
+                                    {{ $agenda->program->division->name }}
+                                @else
+                                    Kosong
+                                @endif</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">@if($agenda->document != null) <a target="__blank" class="text-blue-400 hover:text-black" href="{{ asset('storage/' . $agenda->document) }}">Lihat Dokumen</a>@else Tidak ada Dokumen @endif</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->city->name }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 text-nowrap"><button data-modal-target="edit-modal-{{ $agenda->id }}"
