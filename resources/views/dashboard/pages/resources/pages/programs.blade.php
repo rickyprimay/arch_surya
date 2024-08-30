@@ -57,7 +57,7 @@
                             <td class=" px-4 py-2">{{ $loop->iteration }}</td>
                             <td class=" px-4 py-2">{{ $program->name }}</td>
                             <td class=" px-4 py-2">{{ $program->created_by }}</td>
-                            <td class=" px-4 py-2">@if($program->division_id != null) {{ $program->division->name }} @else kosong @endif</td>
+                            <td class=" px-4 py-2">@if($program->division_id != null) {{ $program->division->name }} @else Kosong @endif</td>
                             <td class=" px-4 py-2">{{ $program->city->name }}</td>
                             <td class="px-6 py-4">
                                 <button data-modal-target="edit-modal-{{ $program->id }}"
