@@ -34,8 +34,6 @@
                 Wakil Dekan
               @elseif($user->role == 1)
                 Kepala Urusan
-              @elseif($user->role == 2)
-                Prodi
               @elseif($user->role == 3)
                 Staf
               @else
