@@ -143,9 +143,11 @@ class DashboardController extends Controller
             'username' => 'required|string|max:255|unique:users,username,' . $user->id,
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users,email,' . $user->id,
-            'password' => 'nullable|string|min:8|confirmed',
+            'password' => 'nullable|string|min:8',
             'role' => 'required|integer',
         ]);
+
+        
 
         if ($validator->fails()) {
             return redirect()->back()->withErrors($validator)->withInput();
@@ -158,6 +160,7 @@ class DashboardController extends Controller
             'password' => $request->password ? Hash::make($request->password) : $user->password,
             'role' => $request->role,
         ]);
+        // dd($request);
 
         toastr()->success('User berhasil diperbarui!');
 

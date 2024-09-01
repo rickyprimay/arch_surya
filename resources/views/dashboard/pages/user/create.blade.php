@@ -59,9 +59,7 @@
                             <option value="" selected disabled>Pilih Jabatan</option>
                             <option value="0" {{ isset($user) && $user->role == 0 ? 'selected' : '' }}>Wakil Dekan</option>
                             <option value="1" {{ isset($user) && $user->role == 1 ? 'selected' : '' }}>Kepala Urusan</option>
-                            <option value="2" {{ isset($user) && $user->role == 2 ? 'selected' : '' }}>Prodi</option>
-                            <option value="3" {{ isset($user) && $user->role == 3 ? 'selected' : '' }}>Kelompok Keahlian</option>
-                            <option value="3" {{ isset($user) && $user->role == 4 ? 'selected' : '' }}>Staf</option>
+                            <option value="3" {{ isset($user) && $user->role == 3 ? 'selected' : '' }}>Staf</option>
                         </select>
                         @error('role')
                             <p class="text-red-500 mt-1 text-sm">{{ $message }}</p>
