@@ -166,7 +166,7 @@ class ChartController extends Controller
     public function update(Request $request, $id)
 {
     Log::info($request->allFiles());
-    // dd($request);
+
     $validated = $request->validate([
         'title' => 'required|string|max:255',
         'start_dt_r' => 'required|date_format:m/d/Y',
@@ -201,17 +201,15 @@ class ChartController extends Controller
 
     // Update dokumen jika ada file yang diunggah
     $documents = [];
-
     if ($request->hasFile('file')) {
         $files = $request->file('file');
-    
+
         if (is_array($files)) {
             foreach ($files as $index => $file) {
                 if ($file->getError() === UPLOAD_ERR_OK) {
                     $path = $file->store('document', 'public');
                     $documents[$index + 1] = $path;
                 } else {
-                    // Tangani kesalahan di sini, misalnya:
                     Log::error('File gagal diunggah: ' . $file->getClientOriginalName());
                 }
             }
@@ -220,17 +218,19 @@ class ChartController extends Controller
         }
     }
 
-    // Update sub-agenda
-    $subAgendas = [];
+    // Handle sub-checkbox and sub
     if ($request->filled('sub-checkbox')) {
+        $subAgendas = [];
         foreach ($validated['sub-checkbox'] as $index => $checked) {
             if ($checked && !empty($validated['sub'][$index])) {
                 $subAgendas[] = $validated['sub'][$index];
             }
         }
-        $agenda->sub = json_encode($subAgendas);
-        $agenda->save();
+        $agenda->sub = !empty($subAgendas) ? json_encode($subAgendas) : null;
+    } else {
+        $agenda->sub = null;
     }
+    $agenda->save();
 
     // Update durasi aktual jika ada
     if ($request->filled('start_dt_a') && $request->filled('end_dt_a')) {
@@ -258,6 +258,7 @@ class ChartController extends Controller
 
     return redirect()->route('dashboard.chart');
 }
+
 
 
 
