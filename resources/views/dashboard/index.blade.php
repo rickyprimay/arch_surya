@@ -18,39 +18,40 @@
         </form>
     </div>
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
-            <div class="flex justify-between items-center">
-                <div>
-                    <div class="text-2xl font-bold pb-4">{{ $totalActual }}</div>
-                    <div class="text-lg">Telah Selesai</div>
-                </div>
-                <div>
-                    <img src="{{ asset('assets/icon/check.svg') }}" alt="Check Icon">
-                </div>
-            </div>
-        </div>
-        <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
-            <div class="flex justify-between items-center">
-                <div>
-                    <div class="text-2xl font-bold pb-4">{{ $totalPlan }}</div>
-                    <div class="text-lg">Dalam Proses</div>
-                </div>
-                <div>
-                    <img src="{{ asset('assets/icon/prog.svg') }}" alt="Progress Icon">
+            <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-2xl font-bold pb-4">{{ $totalActual }}</div>
+                        <div class="text-lg">Telah Selesai</div>
+                    </div>
+                    <div>
+                        <img src="{{ asset('assets/icon/check.svg') }}" alt="Check Icon">
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
-            <div class="flex justify-between items-center">
-                <div>
-                    <div class="text-2xl font-bold pb-4">{{ $totalOnTime }}</div>
-                    <div class="text-lg">Tepat Waktu</div>
-                </div>
-                <div>
-                    <img src="{{ asset('assets/icon/clock.svg') }}" class="w-12" alt="On Time Icon">
+            <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-2xl font-bold pb-4">{{ $totalPlan }}</div>
+                        <div class="text-lg">Dalam Proses</div>
+                    </div>
+                    <div>
+                        <img src="{{ asset('assets/icon/prog.svg') }}" alt="Progress Icon">
+                    </div>
                 </div>
             </div>
-        </div>
+            <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <div class="text-2xl font-bold pb-4">{{ $totalOnTime }}</div>
+                        <div class="text-lg">Tepat Waktu</div>
+                    </div>
+                    <div>
+                        <img src="{{ asset('assets/icon/clock.svg') }}" class="w-12" alt="On Time Icon">
+                    </div>
+                </div>
+            </div>
+        @if (Auth::user()->role != 3)
         <div class="bg-[#E3E3E3] text-black p-4 rounded-lg">
             <div class="flex justify-between items-center">
                 <div>
@@ -62,7 +63,9 @@
                 </div>
             </div>
         </div>
+        @endif
     </div>
+    {{-- @if (Auth::user()->role != 3) --}}
     <div style="width: 100%; margin: auto;" class="pb-96">
         <canvas id="myChart" width="400" height="200"></canvas>
     </div>

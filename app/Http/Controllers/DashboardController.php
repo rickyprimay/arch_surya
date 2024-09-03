@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
@@ -80,15 +81,18 @@ class DashboardController extends Controller
                 'borderColor' => 'rgba(0, 255, 0, 1)',
                 'borderWidth' => 1
             ],
-            [
-                'label' => 'Tidak Tepat Waktu',
-                'data' => $lateData,
-                'backgroundColor' => 'rgba(255, 0, 0, 0.2)',
-                'borderColor' => 'rgba(255, 0, 0, 1)',
-                'borderWidth' => 1
-            ]
+            
         ]
     ];
+    if (Auth::user()->role != 3) {
+        $chartData['datasets'][] = [
+            'label' => 'Tidak Tepat Waktu',
+            'data' => $lateData,
+            'backgroundColor' => 'rgba(255, 0, 0, 0.2)',
+            'borderColor' => 'rgba(255, 0, 0, 1)',
+            'borderWidth' => 1
+        ];
+    }
 
     return view('dashboard.index', compact('totalActual', 'totalPlan', 'totalOnTime', 'totalLate', 'years', 'chartData', 'selectedYear'));
 }
