@@ -19,7 +19,7 @@ return new class extends Migration
             $table->string('ra_first')->default('a');
             $table->string('ra_second')->default('r');
             $table->string('created_by');
-            $table->string('document')->nullable();
+            $table->text('document')->nullable();
             $table->date('start_dt_a')->nullable();
             $table->date('start_dt_r');
             $table->date('end_dt_a')->nullable();

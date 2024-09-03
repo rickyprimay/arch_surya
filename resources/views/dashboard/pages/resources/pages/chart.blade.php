@@ -118,7 +118,25 @@
                                 @else
                                     Kosong
                                 @endif</td>
-                                <td rowspan="2" class="border border-gray-300 px-4 py-2">@if($agenda->document != null) <a target="__blank" class="text-blue-400 hover:text-black" href="{{ asset('storage/' . $agenda->document) }}">Lihat Dokumen</a>@else Tidak ada Dokumen @endif</td>
+                                <td rowspan="2" class="border border-gray-300 px-4 py-2">
+                                    @php
+                                    $documents = json_decode($agenda->document, true);
+                                @endphp
+                                
+                                @if ($documents && is_array($documents))
+                                    @foreach ($documents as $number => $path)
+                                        <a target="_blank" class="text-blue-400 hover:text-black" href="{{ asset('storage/' . $path) }}">
+                                            Lihat Dokumen {{ $number }}
+                                        </a><br>
+                                    @endforeach
+                                    @elseif (!is_array($documents))
+                                    <a target="_blank" class="text-blue-400 hover:text-black" href="{{ asset('storage/' . $agenda->document) }}">
+                                        Lihat Dokumen
+                                    </a><br>
+                                @else
+                                    Tidak ada Dokumen
+                                @endif
+                                
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->city->name }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 text-nowrap"><button data-modal-target="edit-modal-{{ $agenda->id }}"
                                     data-modal-toggle="edit-modal-{{ $agenda->id }}" type="button"
@@ -443,105 +461,109 @@
 
         <!-- Modal create agenda -->
         <div id="create-modal" tabindex="-1" aria-hidden="true"
-            class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
-            <div class="relative p-4 w-full max-w-md max-h-full">
-                <div class="relative bg-white rounded-lg shadow">
-                    <!-- Modal header -->
-                    <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
-                        <h3 class="text-lg font-semibold text-gray-900">
-                            Tambah agenda baru
-                        </h3>
-                        <button type="button"
-                            class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
-                            data-modal-toggle="create-modal">
-                            <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
-                                viewBox="0 0 14 14">
-                                <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                                    stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
-                            </svg>
-                            <span class="sr-only">Close modal</span>
-                        </button>
+    class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
+    <div class="relative p-4 w-full max-w-md max-h-full">
+        <div class="relative bg-white rounded-lg shadow">
+            <!-- Modal header -->
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
+                <h3 class="text-lg font-semibold text-gray-900">
+                    Tambah agenda baru
+                </h3>
+                <button type="button"
+                    class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
+                    data-modal-toggle="create-modal">
+                    <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
+                        viewBox="0 0 14 14">
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
+                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                    </svg>
+                    <span class="sr-only">Close modal</span>
+                </button>
+            </div>
+            <!-- Modal body -->
+            <form class="p-4 md:p-5" method="POST" action="{{ route('dashboard.chart.store') }}" enctype="multipart/form-data">
+                @csrf
+                <div class="grid gap-4 mb-4 grid-cols-2">
+                    <div class="col-span-2">
+                        <label for="title" class="block mb-2 text-sm font-medium text-gray-900">Nama Agenda</label>
+                        <input type="text" name="title" id="title"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            placeholder="Nama Agenda" required>
                     </div>
-                    <!-- Modal body -->
-                    <form class="p-4 md:p-5" method="POST" action="{{ route('dashboard.chart.store') }}" enctype="multipart/form-data">
-                        @csrf
-                        <div class="grid gap-4 mb-4 grid-cols-2">
-                            <div class="col-span-2">
-                                <label for="title" class="block mb-2 text-sm font-medium text-gray-900">Nama
-                                    Agenda</label>
-                                <input type="text" name="title" id="title"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                    placeholder="Nama Agenda" required>
-                            </div>
 
-                            <!-- Date Range Picker for R -->
-                            <div id="date-range-picker-r" date-rangepicker class="flex flex-col col-span-2 mb-2">
-                                <label for="start_dt_r" class="block text-sm font-medium text-gray-900 mb-2">Tanggal Mulai
-                                    dan Selesai (R)</label>
-                                <div class="flex gap-4 mb-2">
-                                    <div class="relative w-full">
-                                        <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                            <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                viewBox="0 0 20 20">
-                                                <path
-                                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
-                                            </svg>
-                                        </div>
-                                        <input id="datepicker-range-start-r" name="start_dt_r" type="text"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-                                            placeholder="Select date start" autocomplete="off">
-                                    </div>
-                                    <span class="flex items-center text-gray-500">to</span>
-                                    <div class="relative w-full">
-                                        <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                            <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
-                                                xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                                viewBox="0 0 20 20">
-                                                <path
-                                                    d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
-                                            </svg>
-                                        </div>
-                                        <input id="datepicker-range-end-r" name="end_dt_r" type="text"
-                                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
-                                            placeholder="Select date end" autocomplete="off">
-                                    </div>
+                    <!-- Date Range Picker for R -->
+                    <div id="date-range-picker-r" date-rangepicker class="flex flex-col col-span-2 mb-2">
+                        <label for="start_dt_r" class="block text-sm font-medium text-gray-900 mb-2">Tanggal Mulai
+                            dan Selesai (R)</label>
+                        <div class="flex gap-4 mb-2">
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                        viewBox="0 0 20 20">
+                                        <path
+                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
+                                    </svg>
                                 </div>
+                                <input id="datepicker-range-start-r" name="start_dt_r" type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                                    placeholder="Select date start" autocomplete="off">
                             </div>
-
-                            <div class="col-span-2">
-                                <label for="program_id"
-                                    class="block mb-2 text-sm font-medium text-gray-900">Program</label>
-                                <select name="program_id" id="program_id"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
-                                    required>
-                                    <option value="">Pilih Program</option>
-                                    @foreach ($programs as $program)
-                                        <option value="{{ $program->id }}">{{ $program->name }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="col-span-2">
-                                <label for="file" class="block mb-2 text-sm font-medium text-gray-900">Dokumen (Opsional)</label>
-                                <input type="file" name="file" id="file"
-                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                            <span class="flex items-center text-gray-500">to</span>
+                            <div class="relative w-full">
+                                <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
+                                    <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
+                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
+                                        viewBox="0 0 20 20">
+                                        <path
+                                            d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
+                                    </svg>
+                                </div>
+                                <input id="datepicker-range-end-r" name="end_dt_r" type="text"
+                                    class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full ps-10 p-2.5"
+                                    placeholder="Select date end" autocomplete="off">
                             </div>
                         </div>
+                    </div>
 
-                        <button type="submit"
-                            class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
-                            <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
-                                xmlns="http://www.w3.org/2000/svg">
-                                <path fill-rule="evenodd"
-                                    d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
-                                    clip-rule="evenodd"></path>
-                            </svg>
-                            Simpan
-                        </button>
-                    </form>
+                    <div class="col-span-2">
+                        <label for="program_id" class="block mb-2 text-sm font-medium text-gray-900">Program</label>
+                        <select name="program_id" id="program_id"
+                            class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
+                            required>
+                            <option value="">Pilih Program</option>
+                            @foreach ($programs as $program)
+                                <option value="{{ $program->id }}">{{ $program->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-span-2">
+                        <label for="file" class="block mb-2 text-sm font-medium text-gray-900">Dokumen (Opsional)</label>
+                        <div id="file-input-container">
+                            <input type="file" name="file[]" id="file"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5">
+                        </div>
+                        <button type="button" id="add-file-input"
+                            class="mt-2 text-blue-500 hover:text-blue-700 text-sm">Tambah Dokumen Lain</button>
+                    </div>
                 </div>
-            </div>
+
+                <button type="submit"
+                    class="text-white inline-flex items-center bg-green-700 hover:bg-green-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 text-center">
+                    <svg class="me-1 -ms-1 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                            d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z"
+                            clip-rule="evenodd"></path>
+                    </svg>
+                    Simpan
+                </button>
+            </form>
         </div>
+    </div>
+</div>
+
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
@@ -613,6 +635,14 @@
             });
         })
         .catch(error => console.error('Error:', error));
+});
+document.getElementById('add-file-input').addEventListener('click', function() {
+    var fileInputContainer = document.getElementById('file-input-container');
+    var newFileInput = document.createElement('input');
+    newFileInput.type = 'file';
+    newFileInput.name = 'file[]';
+    newFileInput.className = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 mt-2';
+    fileInputContainer.appendChild(newFileInput);
 });
     </script>
 @endsection
