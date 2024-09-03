@@ -120,7 +120,7 @@
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky bg-white w-full">
                                     @if(!empty($subAgendas) && is_array($subAgendas))
                                         @foreach($subAgendas as $sub)
-                                            • {{ $sub }}<br>
+                                            •{{ $sub }}<br>
                                         @endforeach
                                     @else
                                         Tidak ada
