@@ -11,6 +11,7 @@ class Agendas extends Model
 
     protected $fillable = [
         'title', 
+        'sub',
         'duration_a', 
         'duration_r', 
         'created_by', 

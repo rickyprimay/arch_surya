@@ -75,6 +75,7 @@
                     <tr>
                         <th rowspan="2" class="px-4 py-2 border sticky left-0 bg-gray-50 border-gray-300 z-10">No</th>
                         <th rowspan="2" class="px-4 py-2 border sticky left-12 bg-gray-50 border-gray-300 z-10">Agenda</th>
+                        <th rowspan="2" class="px-4 py-2 border border-gray-300">Sub Agenda</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Dibuat oleh</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Urusan</th>
                         <th rowspan="2" class="px-4 py-2 border border-gray-300">Dokumen</th>
@@ -112,6 +113,20 @@
                                     {{ $loop->iteration }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky left-12 bg-white ">
                                     {{ $agenda->title }}</td>
+                                @php
+                                    $subAgendas = json_decode($agenda->sub); 
+                                @endphp
+                                
+                                <td rowspan="2" class="border border-gray-300 px-4 py-2 sticky bg-white w-full">
+                                    @if(!empty($subAgendas) && is_array($subAgendas))
+                                        @foreach($subAgendas as $sub)
+                                            • {{ $sub }}<br>
+                                        @endforeach
+                                    @else
+                                        Tidak ada
+                                    @endif
+                                </td>
+                                
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">{{ $agenda->created_by }}</td>
                                 <td rowspan="2" class="border border-gray-300 px-4 py-2">@if(optional($agenda->program->division)->name)
                                     {{ $agenda->program->division->name }}
@@ -315,16 +330,14 @@
         <div class="relative bg-white rounded-lg shadow">
             <!-- Modal header -->
             <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
-                <h3 class="text-lg font-semibold text-gray-900">
-                    Edit Agenda
-                </h3>
+                <h3 class="text-lg font-semibold text-gray-900">Edit Agenda</h3>
                 <button type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
                     data-modal-toggle="edit-modal-{{ $agenda->id }}">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
@@ -340,16 +353,43 @@
                             class="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5"
                             placeholder="Nama Agenda" required>
                     </div>
-                    
+
+                    <!-- Sub Agenda Section -->
+                    <div class="col-span-2">
+                        <div id="edit-input-container-{{ $agenda->id }}">
+                            @php
+                                $subAgendas = json_decode($agenda->sub, true);
+                            @endphp
+                            @if($subAgendas)
+                                @foreach($subAgendas as $subAgenda)
+                                <div class="flex items-center mb-2">
+                                    <input type="checkbox" name="sub-checkbox[]" checked class="h-4 w-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-600 focus:ring-2">
+                                    <input type="text" name="sub[]" value="{{ $subAgenda }}" placeholder="Sub Agenda"
+                                        class="ml-2 border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:border-blue-500 w-full p-0.5">
+                                    <button type="button" class="ml-2 text-red-600 hover:text-gray-900 remove-input">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-1.5 12.5a2 2 0 01-2 1.5H8.5a2 2 0 01-2-1.5L5 7m14 0h-1M5 7H4m10-4h-4m4 0H8m4 0v4m-4 4h8m-8 4h8" />
+                                        </svg>
+                                    </button>
+                                </div>
+                                @endforeach
+                            @endif
+                        </div>
+                        <button type="button" id="add-edit-input-{{ $agenda->id }}" class="mt-2 text-green-600 hover:text-gray-900">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.75v14.5m7.25-7.25H4.75" />
+                            </svg>
+                        </button>
+                    </div>
+
                     <!-- Date Range Picker for R -->
                     <div id="date-range-picker-r-edit" date-rangepicker class="flex flex-col col-span-2 mb-2">
                         <label for="start_dt_r" class="block text-sm font-medium text-gray-900 mb-2">Tanggal Mulai dan Selesai (R)</label>
                         <div class="flex gap-4 mb-2">
                             <div class="relative w-full">
                                 <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
                                     </svg>
@@ -362,9 +402,8 @@
                             <span class="flex items-center text-gray-500">to</span>
                             <div class="relative w-full">
                                 <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
                                     </svg>
@@ -376,7 +415,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                     <!-- Date Range Picker for A -->
                     @if($agenda->start_dt_a != null && $agenda->end_dt_a != null)
                     <div id="date-range-picker-a-edit" date-rangepicker class="flex flex-col col-span-2 mb-2">
@@ -384,9 +423,8 @@
                         <div class="flex gap-4 mb-2">
                             <div class="relative w-full">
                                 <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
                                     </svg>
@@ -399,9 +437,8 @@
                             <span class="flex items-center text-gray-500">to</span>
                             <div class="relative w-full">
                                 <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
                                     </svg>
@@ -436,8 +473,7 @@
                             $documents = json_decode($agenda->document, true);
                         @endphp
                         @foreach($documents as $index => $document)
-                        <iframe src="{{ asset('storage/' . $document) }}" width="100%" height="200px"></iframe>
-                        <br>
+                        <iframe src="{{ asset('storage/' . $document) }}" width="100%" height="300px"></iframe>
                         @endforeach
                     </div>
                     @endif
@@ -465,6 +501,7 @@
                         </svg>
                         Simpan
                     </button>
+                
             </form>
             <form action="{{ route('dashboard.chart.destroy', $agenda->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus agenda ini?');">
                 @csrf
@@ -478,26 +515,26 @@
                 </button>
             </form>
         </div>
+        </div>
     </div>
 </div>
 @endforeach
-        <!-- Modal create agenda -->
-        <div id="create-modal" tabindex="-1" aria-hidden="true"
+
+<!-- Modal create agenda -->
+<div id="create-modal" tabindex="-1" aria-hidden="true"
     class="hidden overflow-y-auto overflow-x-hidden fixed top-0 right-0 left-0 z-50 justify-center items-center w-full md:inset-0 h-[calc(100%-1rem)] max-h-full">
     <div class="relative p-4 w-full max-w-md max-h-full">
         <div class="relative bg-white rounded-lg shadow">
             <!-- Modal header -->
-            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t ">
-                <h3 class="text-lg font-semibold text-gray-900">
-                    Tambah agenda baru
-                </h3>
+            <div class="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
+                <h3 class="text-lg font-semibold text-gray-900">Tambah agenda baru</h3>
                 <button type="button"
                     class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm w-8 h-8 ms-auto inline-flex justify-center items-center"
                     data-modal-toggle="create-modal">
                     <svg class="w-3 h-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none"
                         viewBox="0 0 14 14">
-                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"
-                            stroke-width="2" d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
+                        <path stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="m1 1 6 6m0 0 6 6M7 7l6-6M7 7l-6 6" />
                     </svg>
                     <span class="sr-only">Close modal</span>
                 </button>
@@ -513,16 +550,30 @@
                             placeholder="Nama Agenda" required>
                     </div>
 
+                    <div class="col-span-2">
+                        <div id="input-container">
+                            <div class="flex items-center mb-2">
+                                <input id="sub-checkbox" name="sub-checkbox[]" type="checkbox"
+                                    class="h-4 w-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-600 focus:ring-2">
+                                <input type="text" id="sub" name="sub[]" placeholder="Sub Agenda"
+                                    class="ml-2 border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:border-blue-500 w-full p-0.5">
+                                <button type="button" id="add-input" class="ml-2 text-green-600 hover:text-gray-900">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.75v14.5m7.25-7.25H4.75" />
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Date Range Picker for R -->
                     <div id="date-range-picker-r" date-rangepicker class="flex flex-col col-span-2 mb-2">
-                        <label for="start_dt_r" class="block text-sm font-medium text-gray-900 mb-2">Tanggal Mulai
-                            dan Selesai (R)</label>
+                        <label for="start_dt_r" class="block text-sm font-medium text-gray-900 mb-2">Tanggal Mulai dan Selesai (R)</label>
                         <div class="flex gap-4 mb-2">
                             <div class="relative w-full">
                                 <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
                                     </svg>
@@ -534,9 +585,8 @@
                             <span class="flex items-center text-gray-500">to</span>
                             <div class="relative w-full">
                                 <div class="absolute inset-y-0 left-0 flex items-center ps-3 pointer-events-none">
-                                    <svg class="w-4 h-4 text-gray-500 " aria-hidden="true"
-                                        xmlns="http://www.w3.org/2000/svg" fill="currentColor"
-                                        viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-gray-500" aria-hidden="true" xmlns="http://www.w3.org/2000/svg"
+                                        fill="currentColor" viewBox="0 0 20 20">
                                         <path
                                             d="M20 4a2 2 0 0 0-2-2h-2V1a1 1 0 0 0-2 0v1h-3V1a1 1 0 0 0-2 0v1H6V1a1 1 0 0 0-2 0v1H2a2 2 0 0 0-2 2v2h20V4ZM0 18a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V8H0v10Zm5-8h10a1 1 0 0 1 0 2H5a1 1 0 1 1 0-2Z" />
                                     </svg>
@@ -585,6 +635,7 @@
         </div>
     </div>
 </div>
+
 
     </div>
 
@@ -666,5 +717,63 @@ document.getElementById('add-file-input').addEventListener('click', function() {
     newFileInput.className = 'bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 mt-2';
     fileInputContainer.appendChild(newFileInput);
 });
+document.getElementById('add-input').addEventListener('click', function () {
+        var container = document.getElementById('input-container');
+        var newInput = document.createElement('div');
+        newInput.className = 'flex items-center mb-2';
+        newInput.innerHTML = `
+    <input id="sub-checkbox" name="sub-checkbox[]" type="checkbox"
+        class="h-4 w-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-600 focus:ring-2">
+    <input type="text" id="sub" name="sub[]" placeholder="Sub Agenda"
+        class="ml-2 border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:border-blue-500 w-full p-0.5">
+    <button type="button" class="ml-2 text-red-600 hover:text-gray-900 remove-input">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-1.5 12.5a2 2 0 01-2 1.5H8.5a2 2 0 01-2-1.5L5 7m14 0h-1M5 7H4m10-4h-4m4 0H8m4 0v4m-4 4h8m-8 4h8" />
+        </svg>
+    </button>
+`;
+
+        container.appendChild(newInput);
+
+        // Add event listener to the remove button
+        newInput.querySelector('.remove-input').addEventListener('click', function () {
+            container.removeChild(newInput);
+        });
+    });
+    document.addEventListener('DOMContentLoaded', function () {
+    @foreach ($agendas as $agenda)
+        document.getElementById('add-edit-input-{{ $agenda->id }}').addEventListener('click', function () {
+            var container = document.getElementById('edit-input-container-{{ $agenda->id }}');
+            var newInput = document.createElement('div');
+            newInput.className = 'flex items-center mb-2';
+            newInput.innerHTML = `
+                <input id="sub-checkbox" name="sub-checkbox[]" type="checkbox"
+                    class="h-4 w-4 text-primary-600 bg-gray-100 border-gray-300 rounded focus:ring-primary-600 focus:ring-2">
+                <input type="text" id="sub" name="sub[]" placeholder="Sub Agenda"
+                    class="ml-2 border-b-2 border-gray-300 text-gray-900 text-sm focus:outline-none focus:border-blue-500 w-full p-0.5">
+                <button type="button" class="ml-2 text-red-600 hover:text-gray-900 remove-input">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-1.5 12.5a2 2 0 01-2 1.5H8.5a2 2 0 01-2-1.5L5 7m14 0h-1M5 7H4m10-4h-4m4 0H8m4 0v4m-4 4h8m-8 4h8" />
+                    </svg>
+                </button>
+            `;
+
+            container.appendChild(newInput);
+
+            // Add event listener to the remove button
+            newInput.querySelector('.remove-input').addEventListener('click', function () {
+                container.removeChild(newInput);
+            });
+        });
+
+        // Add event listeners to existing remove buttons
+        document.querySelectorAll('#edit-input-container-{{ $agenda->id }} .remove-input').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+                btn.parentElement.remove();
+            });
+        });
+    @endforeach
+});
+
     </script>
 @endsection

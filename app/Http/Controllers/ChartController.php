@@ -62,56 +62,71 @@ class ChartController extends Controller
     }
 
     public function store(Request $request)
-    {
-        $request->validate([
-            'title' => 'required|string|max:255',
-            'start_dt_r' => 'required|date_format:m/d/Y',
-            'end_dt_r' => 'required|date_format:m/d/Y',
-            'program_id' => 'required|integer|exists:programs,id',
-            'file.*' => 'nullable|file|mimes:pdf,doc,docx',
-        ]);
+{
+    $request->validate([
+        'title' => 'required|string|max:255',
+        'start_dt_r' => 'required|date_format:m/d/Y',
+        'end_dt_r' => 'required|date_format:m/d/Y',
+        'program_id' => 'required|integer|exists:programs,id',
+        'file.*' => 'nullable|file|mimes:pdf,doc,docx',
+    ]);
 
-        $city_id = Programs::find($request->program_id)->city_id;
+    $city_id = Programs::find($request->program_id)->city_id;
 
-        $start_dt_r = Carbon::createFromFormat('m/d/Y', $request->start_dt_r)->format('Y-m-d');
-        $end_dt_r = Carbon::createFromFormat('m/d/Y', $request->end_dt_r)->format('Y-m-d');
+    $start_dt_r = Carbon::createFromFormat('m/d/Y', $request->start_dt_r)->format('Y-m-d');
+    $end_dt_r = Carbon::createFromFormat('m/d/Y', $request->end_dt_r)->format('Y-m-d');
 
-        $start_date = Carbon::createFromFormat('Y-m-d', $start_dt_r);
-        $end_date = Carbon::createFromFormat('Y-m-d', $end_dt_r);
-        $duration_r = $start_date->diffInDays($end_date) + 1;
+    $start_date = Carbon::createFromFormat('Y-m-d', $start_dt_r);
+    $end_date = Carbon::createFromFormat('Y-m-d', $end_dt_r);
+    $duration_r = $start_date->diffInDays($end_date) + 1;
 
-        $agenda = Agendas::create([
-            'title' => $request->title,
-            'duration_r' => $duration_r,
-            'created_by' => Auth::user()->name,
-            'start_dt_r' => $start_dt_r,
-            'end_dt_r' => $end_dt_r,
-            'city_id' => $city_id,
-            'program_id' => $request->program_id,
-        ]);
+    // Handling sub agendas
+    $subAgendas = [];
 
-        $documents = [];
-
-        if ($request->hasFile('file')) {
-            foreach ($request->file('file') as $index => $file) {
-                $path = $file->store('document', 'public');
-                $documents[$index + 1] = $path;
+    if ($request->has('sub-checkbox')) {
+        foreach ($request->input('sub-checkbox') as $index => $checked) {
+            if ($checked && !empty($request->input('sub')[$index])) {
+                $subAgendas[] = $request->input('sub')[$index];
             }
+        }
+    }
 
-            $agenda->document = json_encode($documents);
-            $agenda->save();
+    // Inserting the main agenda with sub agendas as JSON or serialized array
+    $agenda = Agendas::create([
+        'title' => $request->title,
+        'sub' => json_encode($subAgendas), // or serialize($subAgendas) if you prefer serialization
+        'duration_r' => $duration_r,
+        'created_by' => Auth::user()->name,
+        'start_dt_r' => $start_dt_r,
+        'end_dt_r' => $end_dt_r,
+        'city_id' => $city_id,
+        'program_id' => $request->program_id,
+    ]);
+
+    // Handling document uploads
+    $documents = [];
+
+    if ($request->hasFile('file')) {
+        foreach ($request->file('file') as $index => $file) {
+            $path = $file->store('document', 'public');
+            $documents[$index + 1] = $path;
         }
 
-        LogAgenda::create([
-            'name' => Auth::user()->name,
-            'status' => 0,
-            'title' => $request->title,
-        ]);
-
-        toastr()->success('Agenda Berhasil di tambahkan');
-
-        return redirect()->route('dashboard.chart');
+        $agenda->document = json_encode($documents);
+        $agenda->save();
     }
+
+    LogAgenda::create([
+        'name' => Auth::user()->name,
+        'status' => 0,
+        'title' => $request->title,
+    ]);
+
+    toastr()->success('Agenda Berhasil di tambahkan');
+
+    return redirect()->route('dashboard.chart');
+}
+
 
     public function updateActual(Request $request, $id)
     {
@@ -160,6 +175,8 @@ class ChartController extends Controller
         'start_dt_a' => 'nullable|date_format:m/d/Y',
         'end_dt_a' => 'nullable|date_format:m/d/Y',
         'file.*' => 'nullable|file|mimes:pdf,doc,docx',
+        'sub-checkbox' => 'nullable|array',
+        'sub' => 'nullable|array',
     ]);
 
     $city_id = Programs::find($validated['program_id'])->city_id;
@@ -182,6 +199,7 @@ class ChartController extends Controller
         'program_id' => $validated['program_id'],
     ]);
 
+    // Update dokumen jika ada file yang diunggah
     $documents = [];
 
     if ($request->hasFile('file')) {
@@ -202,6 +220,19 @@ class ChartController extends Controller
         }
     }
 
+    // Update sub-agenda
+    $subAgendas = [];
+    if ($request->filled('sub-checkbox')) {
+        foreach ($validated['sub-checkbox'] as $index => $checked) {
+            if ($checked && !empty($validated['sub'][$index])) {
+                $subAgendas[] = $validated['sub'][$index];
+            }
+        }
+        $agenda->sub = json_encode($subAgendas);
+        $agenda->save();
+    }
+
+    // Update durasi aktual jika ada
     if ($request->filled('start_dt_a') && $request->filled('end_dt_a')) {
         $start_dt_a = Carbon::createFromFormat('m/d/Y', $validated['start_dt_a'])->format('Y-m-d');
         $end_dt_a = Carbon::createFromFormat('m/d/Y', $validated['end_dt_a'])->format('Y-m-d');
@@ -222,12 +253,12 @@ class ChartController extends Controller
         'status' => 2,
         'title' => $agenda->title,
     ]);
-    
 
     toastr()->success('Agenda Berhasil diperbarui');
 
     return redirect()->route('dashboard.chart');
 }
+
 
 
     public function destroy($id)
