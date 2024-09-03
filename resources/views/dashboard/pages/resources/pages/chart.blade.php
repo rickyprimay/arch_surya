@@ -473,9 +473,14 @@
                             $documents = json_decode($agenda->document, true);
                         @endphp
                         @foreach($documents as $index => $document)
-                        <iframe src="{{ asset('storage/' . $document) }}" width="100%" height="300px"></iframe>
+                        <iframe src="{{ asset('storage/' . $document) }}" width="100%" height="200px"></iframe>
                         @endforeach
                     </div>
+                    @elseif (!is_array($documents))
+                                    <a target="_blank" class="text-blue-400 hover:text-black" href="{{ asset('storage/' . $agenda->document) }}">
+                                        Lihat Dokumen
+                                    </a><br>
+                                    <iframe src="{{ asset('storage/' . $agenda->document) }}" width="100%" height="200px"></iframe>
                     @endif
 
                     <!-- Input baru untuk mengganti dokumen -->
