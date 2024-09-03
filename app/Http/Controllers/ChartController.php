@@ -9,6 +9,7 @@ use App\Models\Programs;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use Carbon\Carbon;
 
 class ChartController extends Controller
@@ -62,7 +63,6 @@ class ChartController extends Controller
 
     public function store(Request $request)
     {
-        // Validate the incoming request data
         $request->validate([
             'title' => 'required|string|max:255',
             'start_dt_r' => 'required|date_format:m/d/Y',
@@ -149,72 +149,86 @@ class ChartController extends Controller
     }
 
     public function update(Request $request, $id)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'start_dt_r' => 'required|date_format:m/d/Y',
-            'end_dt_r' => 'required|date_format:m/d/Y',
-            'program_id' => 'required|integer|exists:programs,id',
-            'start_dt_a' => 'nullable|date_format:m/d/Y',
-            'end_dt_a' => 'nullable|date_format:m/d/Y',
-            'file' => 'nullable|file|mimes:pdf,doc,docx',
-        ]);
+{
+    Log::info($request->allFiles());
+    // dd($request);
+    $validated = $request->validate([
+        'title' => 'required|string|max:255',
+        'start_dt_r' => 'required|date_format:m/d/Y',
+        'end_dt_r' => 'required|date_format:m/d/Y',
+        'program_id' => 'required|integer|exists:programs,id',
+        'start_dt_a' => 'nullable|date_format:m/d/Y',
+        'end_dt_a' => 'nullable|date_format:m/d/Y',
+        'file.*' => 'nullable|file|mimes:pdf,doc,docx',
+    ]);
 
-        $city_id = Programs::find($validated['program_id'])->city_id;
+    $city_id = Programs::find($validated['program_id'])->city_id;
 
-        $agenda = Agendas::findOrFail($id);
+    $agenda = Agendas::findOrFail($id);
 
-        $start_dt_r = Carbon::createFromFormat('m/d/Y', $validated['start_dt_r'])->format('Y-m-d');
-        $end_dt_r = Carbon::createFromFormat('m/d/Y', $validated['end_dt_r'])->format('Y-m-d');
+    $start_dt_r = Carbon::createFromFormat('m/d/Y', $validated['start_dt_r'])->format('Y-m-d');
+    $end_dt_r = Carbon::createFromFormat('m/d/Y', $validated['end_dt_r'])->format('Y-m-d');
 
-        $start_date_r = Carbon::createFromFormat('Y-m-d', $start_dt_r);
-        $end_date_r = Carbon::createFromFormat('Y-m-d', $end_dt_r);
-        $duration_r = $start_date_r->diffInDays($end_date_r) + 1;
+    $start_date_r = Carbon::createFromFormat('Y-m-d', $start_dt_r);
+    $end_date_r = Carbon::createFromFormat('Y-m-d', $end_dt_r);
+    $duration_r = $start_date_r->diffInDays($end_date_r) + 1;
 
-        $agenda->update([
-            'title' => $validated['title'],
-            'start_dt_r' => $start_dt_r,
-            'end_dt_r' => $end_dt_r,
-            'duration_r' => $duration_r,
-            'city_id' => $city_id,
-            'program_id' => $validated['program_id'],
-        ]);
+    $agenda->update([
+        'title' => $validated['title'],
+        'start_dt_r' => $start_dt_r,
+        'end_dt_r' => $end_dt_r,
+        'duration_r' => $duration_r,
+        'city_id' => $city_id,
+        'program_id' => $validated['program_id'],
+    ]);
 
-        if ($request->hasFile('file')) {
-            if ($agenda->document) {
-                Storage::disk('public')->delete($agenda->document);
+    $documents = [];
+
+    if ($request->hasFile('file')) {
+        $files = $request->file('file');
+    
+        if (is_array($files)) {
+            foreach ($files as $index => $file) {
+                if ($file->getError() === UPLOAD_ERR_OK) {
+                    $path = $file->store('document', 'public');
+                    $documents[$index + 1] = $path;
+                } else {
+                    // Tangani kesalahan di sini, misalnya:
+                    Log::error('File gagal diunggah: ' . $file->getClientOriginalName());
+                }
             }
-
-            $path = $request->file('file')->store('document', 'public');
-            $agenda->document = $path;
+            $agenda->document = json_encode($documents);
             $agenda->save();
         }
-
-        if ($request->filled('start_dt_a') && $request->filled('end_dt_a')) {
-            $start_dt_a = Carbon::createFromFormat('m/d/Y', $validated['start_dt_a'])->format('Y-m-d');
-            $end_dt_a = Carbon::createFromFormat('m/d/Y', $validated['end_dt_a'])->format('Y-m-d');
-
-            $start_date_a = Carbon::createFromFormat('Y-m-d', $start_dt_a);
-            $end_date_a = Carbon::createFromFormat('Y-m-d', $end_dt_a);
-            $duration_a = $start_date_a->diffInDays($end_date_a) + 1;
-
-            $agenda->update([
-                'start_dt_a' => $start_dt_a,
-                'end_dt_a' => $end_dt_a,
-                'duration_a' => $duration_a,
-            ]);
-        }
-
-        LogAgenda::create([
-            'name' => Auth::user()->name,
-            'status' => 2,
-            'title' => $agenda->title,
-        ]);
-
-        toastr()->success('Agenda Berhasil diperbarui');
-
-        return redirect()->route('dashboard.chart');
     }
+
+    if ($request->filled('start_dt_a') && $request->filled('end_dt_a')) {
+        $start_dt_a = Carbon::createFromFormat('m/d/Y', $validated['start_dt_a'])->format('Y-m-d');
+        $end_dt_a = Carbon::createFromFormat('m/d/Y', $validated['end_dt_a'])->format('Y-m-d');
+
+        $start_date_a = Carbon::createFromFormat('Y-m-d', $start_dt_a);
+        $end_date_a = Carbon::createFromFormat('Y-m-d', $end_dt_a);
+        $duration_a = $start_date_a->diffInDays($end_date_a) + 1;
+
+        $agenda->update([
+            'start_dt_a' => $start_dt_a,
+            'end_dt_a' => $end_dt_a,
+            'duration_a' => $duration_a,
+        ]);
+    }
+
+    LogAgenda::create([
+        'name' => Auth::user()->name,
+        'status' => 2,
+        'title' => $agenda->title,
+    ]);
+    
+
+    toastr()->success('Agenda Berhasil diperbarui');
+
+    return redirect()->route('dashboard.chart');
+}
+
 
     public function destroy($id)
     {
