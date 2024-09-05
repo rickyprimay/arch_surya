@@ -693,7 +693,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const dropdownButton = document.getElementById('dropdownButton');
+            // const dropdownButton = document.getElementById('dropdownButton');
             const dropdownMenu = document.getElementById('dropdownMenu');
             const filterForm = document.getElementById('filterForm');
 
@@ -706,11 +706,11 @@
                 toggleDropdown();
             });
 
-            document.addEventListener('click', function(event) {
-                if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
-                    dropdownMenu.classList.add('hidden');
-                }
-            });
+            // document.addEventListener('click', function(event) {
+            //     if (!dropdownButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+            //         dropdownMenu.classList.add('hidden');
+            //     }
+            // });
 
             filterForm.addEventListener('submit', function(event) {
                 const year = document.getElementById('year').value;
