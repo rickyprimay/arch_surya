@@ -27,6 +27,7 @@ Route::middleware('auth')->group(function () {
     Route::delete('/dashboard/resource/documents/{document}', [DocumentsController::class, 'destroy'])->name('dashboard.document.destroy');
 
     Route::get('/dashboard/resource/chart', [ChartController::class, 'index'])->name('dashboard.chart');
+    Route::get('/dashboard/chart/{id}/edit', [ChartController::class, 'edit'])->name('dashboard.chart.edit');
     Route::post('/dashboard/resource/chart', [ChartController::class, 'store'])->name('dashboard.chart.store'); 
     Route::put('dashboard/chart/{id}/update', [ChartController::class, 'updateActual'])->name('dashboard.chart.updateActual');
     Route::put('/dashboard/chart/{id}', [ChartController::class, 'update'])->name('dashboard.chart.update');

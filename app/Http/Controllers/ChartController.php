@@ -163,6 +163,15 @@ class ChartController extends Controller
         return redirect()->route('dashboard.chart');
     }
 
+    public function edit($id)
+{
+    $agenda = Agendas::findOrFail($id);
+    $programs = Programs::all();  // Ambil semua program dari tabel 'programs'
+    
+    return view('dashboard.pages.resources.pages.editChart', compact('agenda', 'programs'));
+}
+
+
     public function update(Request $request, $id)
 {
     Log::info($request->allFiles());
