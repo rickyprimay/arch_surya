@@ -27,6 +27,7 @@ return new class extends Migration
             $table->string('information')->nullable();
             $table->unsignedBigInteger('city_id');
             $table->unsignedBigInteger('program_id');
+            $table->string('sub');
             $table->timestamp('updated_date')->nullable();
             $table->timestamp('updated_actual')->nullable();
             $table->timestamps();

@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class DashboardController extends Controller
 {
@@ -16,30 +17,30 @@ class DashboardController extends Controller
     $selectedYear = $request->input('year', date('Y'));
 
     $totalActual = Agendas::whereYear('start_dt_r', $selectedYear)
-                          ->whereNotNull('end_dt_a')
-                          ->count();
+                         ->whereNotNull('end_dt_a')
+                         ->count();
     $totalPlan = Agendas::whereYear('start_dt_r', $selectedYear)
-                        ->whereNull('end_dt_a')
-                        ->count();
+                       ->whereNull('end_dt_a')
+                       ->count();
     $totalOnTime = Agendas::whereYear('start_dt_r', $selectedYear)
-                          ->whereNotNull('end_dt_a')
-                          ->whereColumn('end_dt_a', '<=', 'end_dt_r')
-                          ->count();
+                         ->whereNotNull('end_dt_a')
+                         ->whereColumn('end_dt_a', '<=', 'end_dt_r')
+                         ->count();
     $totalLate = Agendas::whereYear('start_dt_r', $selectedYear)
-                        ->whereNotNull('end_dt_a')
-                        ->whereColumn('end_dt_a', '>', 'end_dt_r')
-                        ->count();
+                       ->whereNotNull('end_dt_a')
+                       ->whereColumn('end_dt_a', '>', 'end_dt_r')
+                       ->count();
 
     $years = Agendas::selectRaw('YEAR(start_dt_r) as year')
-                    ->distinct()
-                    ->orderBy('year', 'desc')
-                    ->pluck('year');
+                   ->distinct()
+                   ->orderBy('year', 'desc')
+                   ->pluck('year');
 
     $agendasByYear = Agendas::whereYear('start_dt_r', $selectedYear)
-                            ->get()
-                            ->groupBy(function($item) {
-                                return \Carbon\Carbon::parse($item->start_dt_r)->format('n');
-                            });
+                           ->get()
+                           ->groupBy(function($item) {
+                               return Carbon::parse($item->start_dt_r)->format('n');
+                           });
 
     $completedData = [];
     $inProgressData = [];
@@ -50,10 +51,10 @@ class DashboardController extends Controller
         $completedData[] = $monthlyAgendas->whereNotNull('end_dt_a')->count();
         $inProgressData[] = $monthlyAgendas->whereNull('end_dt_a')->count();
         $onTimeData[] = $monthlyAgendas->filter(function($agenda) {
-            return $agenda->end_dt_a && $agenda->end_dt_a <= $agenda->end_dt_r;
+            return $agenda->end_dt_a && Carbon::parse($agenda->end_dt_a)->lessThanOrEqualTo(Carbon::parse($agenda->end_dt_r));
         })->count();
         $lateData[] = $monthlyAgendas->filter(function($agenda) {
-            return $agenda->end_dt_a && $agenda->end_dt_a > $agenda->end_dt_r;
+            return $agenda->end_dt_a && Carbon::parse($agenda->end_dt_a)->greaterThan(Carbon::parse($agenda->end_dt_r));
         })->count();
     }
 
@@ -81,9 +82,9 @@ class DashboardController extends Controller
                 'borderColor' => 'rgba(0, 255, 0, 1)',
                 'borderWidth' => 1
             ],
-            
         ]
     ];
+
     if (Auth::user()->role != 3) {
         $chartData['datasets'][] = [
             'label' => 'Tidak Tepat Waktu',
@@ -94,7 +95,16 @@ class DashboardController extends Controller
         ];
     }
 
-    return view('dashboard.index', compact('totalActual', 'totalPlan', 'totalOnTime', 'totalLate', 'years', 'chartData', 'selectedYear'));
+    $upcomingAgendas = Agendas::whereYear('start_dt_r', $selectedYear)
+                             ->whereDate('end_dt_r', '>=', Carbon::now())
+                             ->whereDate('end_dt_r', '<=', Carbon::now()->addDays(7))
+                             ->get()
+                             ->map(function($agenda) {
+                                 $agenda->end_dt_r = Carbon::parse($agenda->end_dt_r);
+                                 return $agenda;
+                             });
+
+    return view('dashboard.index', compact('totalActual', 'totalPlan', 'totalOnTime', 'totalLate', 'years', 'chartData', 'selectedYear', 'upcomingAgendas'));
 }
 
 
